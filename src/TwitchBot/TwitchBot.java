@@ -39,6 +39,13 @@ public class TwitchBot extends PircBot {
     private PoE poe;
     private UserList userList;
 
+    /**
+     * @param name the name of the bot
+     * @param master name of the user that will be allowed to use admin commands
+     * @param oauth authentication code for twitch connection, see https://dev.twitter.com/oauth/reference/get/oauth/authenticate
+     * @param twitchChannel twitch channel the bot will operate in
+     * @throws IOException
+     */
     public TwitchBot(String name, String master, String oauth, String twitchChannel) throws IOException {
         setName(name);
         setEncoding("utf-8");
@@ -49,11 +56,6 @@ public class TwitchBot extends PircBot {
         this.oauth = oauth;
         this.twitchChannel = twitchChannel;
         userList = new UserList("viewers.csv");
-    }
-
-    @Override
-    protected void onUnknown(String line) {
-        System.out.println(line);
     }
 
     public void connectToTwitch() {
@@ -68,6 +70,10 @@ public class TwitchBot extends PircBot {
         }
     }
 
+    @Override
+    protected void onUnknown(String line) {
+        System.out.println(line);
+    }
 
     @Override
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
@@ -237,7 +243,12 @@ public class TwitchBot extends PircBot {
 
     public void log(String channel, String nick, String message)
             throws IOException {
+        File folder = new File("logs/");
+        if (!folder.isDirectory()) {
+            folder.mkdir();
+        }
         File tempFile = new File("logs/" + channel + ".txt");
+
         BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile,
                 true));
 
