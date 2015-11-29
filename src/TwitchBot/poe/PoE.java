@@ -1,6 +1,6 @@
 package TwitchBot.poe;
 
-import TwitchBot.poe.droplist.DropList;
+import TwitchBot.droplist.POEDropList;
 import TwitchBot.poe.ladder.Ladder;
 import TwitchBot.poe.ladder.RankStatus;
 import TwitchBot.poe.race.Race;
@@ -10,9 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -28,7 +26,7 @@ public class PoE {
     private String account;
     private String channel;
     private String league;
-    private DropList droplist;
+    private POEDropList droplist;
 
     private boolean qChar = false;
 
@@ -38,7 +36,7 @@ public class PoE {
         this.account = account;
         this.channel = channel;
         this.bot = bot;
-        this.droplist = new DropList();
+        this.droplist = new POEDropList();
 
     }
 

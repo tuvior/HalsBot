@@ -1,19 +1,19 @@
-package TwitchBot.poe.droplist;
+package TwitchBot.droplist;
 
 import java.io.*;
 import java.util.LinkedList;
 
-public class DropList {
+public class RealmDropList {
 
     public LinkedList<Drop> drops;
 
-    public DropList() {
+    public RealmDropList() {
         drops = new LinkedList<>();
         loadFromFile();
     }
 
     public String addDrop(String name) {
-        Drop drop = new Drop(name);
+        Drop drop = new RealmDrop(name);
         drops.addFirst(drop);
         writeToFile();
         return drop.name;
@@ -33,16 +33,16 @@ public class DropList {
     }
 
     private void loadFromFile() {
-        File file = new File("droplist.txt");
+        File file = new File("realm_droplist.txt");
         if (file.exists()) {
             try {
-                FileReader reader = new FileReader("droplist.txt");
+                FileReader reader = new FileReader("realm_droplist.txt");
                 BufferedReader bufferedReader = new BufferedReader(reader);
 
                 String line;
 
                 while ((line = bufferedReader.readLine()) != null) {
-                    Drop drop = new Drop(line);
+                    Drop drop = new RealmDrop(line);
                     drops.add(drop);
                 }
                 reader.close();
@@ -56,7 +56,7 @@ public class DropList {
 
     private void writeToFile() {
         try {
-            FileWriter writer = new FileWriter("droplist.txt");
+            FileWriter writer = new FileWriter("realm_droplist.txt");
             for (Drop drop : drops) {
                 writer.write(drop.name);
                 writer.write("\n");

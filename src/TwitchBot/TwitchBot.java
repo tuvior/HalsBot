@@ -16,11 +16,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+import TwitchBot.droplist.RealmDropList;
 import TwitchBot.poe.PoE;
+import TwitchBot.realm.Realm;
 import TwitchBot.userlist.UserList;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jibble.pircbot.NickAlreadyInUseException;
 import org.jibble.pircbot.PircBot;
+import org.json.JSONObject;
+
+import static TwitchBot.jsonutil.JSONUtil.readJsonFromUrl;
 
 public class TwitchBot extends PircBot {
 
@@ -30,13 +35,14 @@ public class TwitchBot extends PircBot {
 
     public Set<String> ignoredUsers;
 
-    private String master;
+    public String master;
     private String oauth;
     private String twitchChannel;
 
     private ScriptManager scripts;
     private boolean title = true;
-    private PoE poe;
+    public PoE poe;
+    public Realm realm;
     private UserList userList;
 
     /**
@@ -51,6 +57,7 @@ public class TwitchBot extends PircBot {
         setEncoding("utf-8");
         scripts = new ScriptManager(this);
         poe = new PoE(this, "#" + twitchChannel, "Hals");
+        realm = new Realm(this, "#" + twitchChannel, "https://www.realmeye.com/player/zQe50cWAgsb");
 
         this.master = master;
         this.oauth = oauth;
@@ -168,16 +175,6 @@ public class TwitchBot extends PircBot {
             }
 
             poe.track(command[1]);
-        } else if (message.toLowerCase().startsWith("!adddrop")) {
-            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
-                sendMessage(channel, "User not authorized.");
-                return;
-            }
-            String drop = message.substring(9);
-            if (!drop.equals("")) {
-                poe.addDrop(drop);
-            }
-
         } else if (message.equalsIgnoreCase("!ladder")) {
             poe.getLadder();
         } else if (message.equalsIgnoreCase("!racemods")) {
@@ -186,11 +183,58 @@ public class TwitchBot extends PircBot {
             poe.getRaceLadder();
         } else if (message.equalsIgnoreCase("!profile")) {
             poe.getProfilePage();
-        } else if (message.equalsIgnoreCase("!drops")) {
-            poe.getDrops();
-        } else if (message.equalsIgnoreCase("!commands")) {
+        }  else if (message.equalsIgnoreCase("!commands")) {
             String commands = "!rank, !rank <accountname>, !profile, !ladder, !racerank, !racerank <accountname / charactername>, !racetime, !raceladder, !racemods";
             sendMessage(channel, commands);
+        }
+
+        //Realm Commands
+        else if (message.toLowerCase().startsWith("!setrealm")) {
+            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
+                sendMessage(channel, "User not authorized.");
+                return;
+            }
+            String realm_ = message.substring(10);
+            if (!realm_.equals("")) {
+                realm.setRealm(realm_);
+            }
+        } else if (message.equalsIgnoreCase("!realm")) {
+            realm.getRealm();
+        } else if (message.equalsIgnoreCase("!realmeye")) {
+            realm.getRealmeye();
+        }
+
+
+        else if (message.equalsIgnoreCase("!drops")) {
+            try {
+                JSONObject t_channel = readJsonFromUrl("https://api.twitch.tv/kraken/channels/" + twitchChannel);
+                if (t_channel.getString("game").equals("Realm of the Mad God")) {
+                    realm.getDrops();
+                } else {
+                    poe.getDrops();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if (message.toLowerCase().startsWith("!adddrop")) {
+            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
+                sendMessage(channel, "User not authorized.");
+                return;
+            }
+            String drop = message.substring(9);
+            if (!drop.equals("")) {
+                try {
+                    JSONObject t_channel = readJsonFromUrl("https://api.twitch.tv/kraken/channels/" + twitchChannel);
+                    if (t_channel.getString("game").equals("Realm of the Mad God")) {
+                        realm.addDrop(drop);
+                    } else {
+                        poe.addDrop(drop);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         //title
