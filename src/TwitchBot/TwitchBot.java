@@ -57,7 +57,7 @@ public class TwitchBot extends PircBot {
         setEncoding("utf-8");
         scripts = new ScriptManager(this);
         poe = new PoE(this, "#" + twitchChannel, "Hals");
-        realm = new Realm(this, "#" + twitchChannel, "https://www.realmeye.com/player/zQe50cWAgsb");
+        realm = new Realm(this, "#" + twitchChannel, "http://www.realmeye.com/player/0J92LSv0w08");
 
         this.master = master;
         this.oauth = oauth;
@@ -183,9 +183,22 @@ public class TwitchBot extends PircBot {
             poe.getRaceLadder();
         } else if (message.equalsIgnoreCase("!profile")) {
             poe.getProfilePage();
-        }  else if (message.equalsIgnoreCase("!commands")) {
-            String commands = "!rank, !rank <accountname>, !profile, !ladder, !racerank, !racerank <accountname / charactername>, !racetime, !raceladder, !racemods";
-            sendMessage(channel, commands);
+        } else if (message.equalsIgnoreCase("!tree")) {
+            poe.tree();
+        } else if (message.equalsIgnoreCase("!commands")) {
+            try {
+                JSONObject t_channel = readJsonFromUrl("https://api.twitch.tv/kraken/channels/" + twitchChannel);
+                if (t_channel.getString("game").equals("Realm of the Mad God")) {
+                    String commands = "!server, !realmeye, !drops";
+                    sendMessage(channel, commands);
+                } else {
+                    String commands = "!rank, !rank <accountname / charactername>, !profile, !tree, !ladder, !racerank, !racerank <accountname / charactername>, !racetime, !raceladder, !racemods, !drops";
+                    sendMessage(channel, commands);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
 
         //Realm Commands
@@ -200,7 +213,9 @@ public class TwitchBot extends PircBot {
             }
         } else if (message.equalsIgnoreCase("!realm")) {
             realm.getRealm();
-        } else if (message.equalsIgnoreCase("!realmeye")) {
+        } else if (message.equalsIgnoreCase("!server")) {
+            realm.getServer();
+        }else if (message.equalsIgnoreCase("!realmeye")) {
             realm.getRealmeye();
         }
 
@@ -212,6 +227,18 @@ public class TwitchBot extends PircBot {
                     realm.getDrops();
                 } else {
                     poe.getDrops();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if (message.equalsIgnoreCase("!removedrop")) {
+            try {
+                JSONObject t_channel = readJsonFromUrl("https://api.twitch.tv/kraken/channels/" + twitchChannel);
+                if (t_channel.getString("game").equals("Realm of the Mad God")) {
+                    realm.removeDrop();
+                } else {
+                    poe.removeDrop();
                 }
             } catch (IOException e) {
                 e.printStackTrace();

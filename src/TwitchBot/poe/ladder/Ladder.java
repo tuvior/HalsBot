@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import TwitchBot.poe.ladder.Character.Class;
 
 import static TwitchBot.jsonutil.JSONUtil.readJsonFromUrl;
@@ -26,7 +27,6 @@ public class Ladder {
     private static Ladder fromJson(JSONObject obj) {
         int total = obj.getInt("total");
         ArrayList<LadderEntry> entries = new ArrayList<>();
-
 
 
         JSONArray ent = obj.getJSONArray("entries");
@@ -50,13 +50,13 @@ public class Ladder {
 
     public RankStatus getRankForQuery(String name, boolean character) {
         HashMap<Class, Integer> classes = new HashMap<>();
-        classes.put(Class.Duelist,0);
-        classes.put(Class.Marauder,0);
-        classes.put(Class.Ranger,0);
-        classes.put(Class.Scion,0);
-        classes.put(Class.Shadow,0);
+        classes.put(Class.Duelist, 0);
+        classes.put(Class.Marauder, 0);
+        classes.put(Class.Ranger, 0);
+        classes.put(Class.Scion, 0);
+        classes.put(Class.Shadow, 0);
         classes.put(Class.Templar, 0);
-        classes.put(Class.Witch,0);
+        classes.put(Class.Witch, 0);
 
         Class charClass = null;
         String charName = "";
@@ -68,6 +68,7 @@ public class Ladder {
 
             Class entryClass = entry.getCharacter().getCharClass();
             classes.put(entryClass, classes.get(entryClass) + 1);
+
 
             if (!character && !entry.getDead() && entry.getAccount().getName().equalsIgnoreCase(name)) {
                 charClass = entryClass;

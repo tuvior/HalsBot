@@ -32,6 +32,12 @@ public class POEDropList {
         return dropss.trim();
     }
 
+    public Drop removeLast(){
+        Drop removed = drops.removeFirst();
+        writeToFile();
+        return removed;
+    }
+
     private void loadFromFile() {
         File file = new File("poe_droplist.txt");
         if (file.exists()) {

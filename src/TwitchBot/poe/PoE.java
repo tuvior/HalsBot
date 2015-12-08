@@ -1,5 +1,6 @@
 package TwitchBot.poe;
 
+import TwitchBot.droplist.Drop;
 import TwitchBot.droplist.POEDropList;
 import TwitchBot.poe.ladder.Ladder;
 import TwitchBot.poe.ladder.RankStatus;
@@ -58,24 +59,20 @@ public class PoE {
                 if (characters.get(key) instanceof JSONObject) {
                     JSONObject character = characters.getJSONObject(key);
 
-                    if (character.getString("dead").equals("0")) {
-                        long last = Long.parseLong(character.getString("lastOnline"));
+                    long last = Long.parseLong(character.getString("lastOnline"));
 
-                        if (last > lastSeen) {
-                            lastSeen = last;
-                            league = character.getString("league");
-                            characterName = key.substring(key.indexOf(".") + 1);
+                    if (last > lastSeen) {
+                        lastSeen = last;
+                        league = character.getString("league");
+                        characterName = key.substring(key.indexOf(".") + 1);
 
-                        }
                     }
-
                 }
             }
-
             qChar = false;
         } catch (JSONException e) {
             JSONObject character = readJsonFromUrl(exiletools_ladder_url + "&charName=" + account);
-            character = character.getJSONObject((String)character.keys().next());
+            character = character.getJSONObject((String) character.keys().next());
             league = character.getString("league");
             characterName = account;
             qChar = true;
@@ -98,6 +95,22 @@ public class PoE {
     public void addDrop(String name) {
         String drop = droplist.addDrop(name);
         bot.sendMessage(channel, "Added: " + drop);
+    }
+
+    public void removeDrop() {
+        Drop removed = droplist.removeLast();
+        bot.sendMessage(channel, "Removed: " + removed);
+    }
+
+    public void tree() {
+        try {
+            initializeLeague(account);
+            String treeUrl = BuildTree.loadTree(characterName, account);
+            bot.sendMessage(channel, treeUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void getDrops() {
@@ -148,12 +161,12 @@ public class PoE {
         int level;
         if (qChar) {
             JSONObject character = readJsonFromUrl(exiletools_ladder_url + "&charName=" + account);
-            character = character.getJSONObject((String)character.keys().next());
+            character = character.getJSONObject((String) character.keys().next());
 
             rank = Integer.parseInt(character.getString("rank"));
             level = Integer.parseInt(character.getString("level"));
         } else {
-            JSONObject characters = readJsonFromUrl(exiletools_ladder_url + account);
+            JSONObject characters = readJsonFromUrl(exiletools_ladder_url + "&accountName=" + account);
             JSONObject character = characters.getJSONObject(account + "." + characterName);
 
             rank = Integer.parseInt(character.getString("rank"));
