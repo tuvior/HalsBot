@@ -138,6 +138,8 @@ public class TwitchBot extends PircBot {
             } else {
                 sendMessage(channel, "Invalid parameters.");
             }
+        } else if (message.toLowerCase().equals("!about")) {
+            sendMessage(channel, "HalsBot by Tuvior, https://github.com/tuvior/HalsBot");
         }
 
         // PoE Commands
@@ -177,10 +179,10 @@ public class TwitchBot extends PircBot {
             poe.tree();
         } else if (message.equalsIgnoreCase("!commands")) {
             if (getCurrentGame().equals("Realm of the Mad God")) {
-                String commands = "!server, !realmeye, !drops";
+                String commands = "!server, !realmeye, !drops, !about";
                 sendMessage(channel, commands);
             } else {
-                String commands = "!rank, !rank <accountname / charactername>, !profile, !tree, !ladder, !racerank, !racerank <accountname / charactername>, !racetime, !raceladder, !racemods, !drops";
+                String commands = "!rank, !rank <accountname / charactername>, !profile, !tree, !ladder, !racerank, !racerank <accountname / charactername>, !racetime, !raceladder, !racemods, !drops, !about";
                 sendMessage(channel, commands);
             }
         }
