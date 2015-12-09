@@ -79,7 +79,7 @@ public class PoE {
         }
 
         if (league.equals("")) {
-            TwitchBot.echo("League not found");
+            bot.echo("League not found");
             this.league = "";
         } else {
             JSONObject leagues = readJsonFromUrl(exiletools_leaguelist_url);
