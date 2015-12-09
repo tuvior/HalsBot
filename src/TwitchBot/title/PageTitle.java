@@ -19,7 +19,7 @@ public class PageTitle {
 
 
     public static boolean checkForUrl(String message) {
-        return message.matches(".*(([a-zA-Z0-9]{1,6})://)?([_a-z\\d\\-]+(\\.[_a-z\\d\\-]+)+)(([_a-z\\d\\-\\\\\\./]+[_a-z\\d\\-\\\\/])+)*.*");
+        return !message.contains("puu.sh") && message.matches(".*(([a-zA-Z0-9]{1,6})://)?([_a-z\\d\\-]+(\\.[_a-z\\d\\-]+)+)(([_a-z\\d\\-\\\\\\./]+[_a-z\\d\\-\\\\/])+)*.*");
     }
 
     public static String getPageTitle(String url) {
