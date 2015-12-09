@@ -13,35 +13,19 @@ public class BuildTree {
 
     static String lastName = "";
     static int treeSize = 0;
-
     static String lastUrl = "";
 
-
-    public static String saveToURL(int [] tree, int class_) {
-        byte[] b = new byte[(tree.length) * 2];
-        String CharacterURL = getCharacterURL((byte)class_);
-        int pos = 0;
-        for (int inn : tree)
-        {
-            byte[] dbff = GetBytes(inn);
-            b[pos++] = dbff[1];
-            b[pos++] = dbff[0];
-        }
-        String base_string =  new sun.misc.BASE64Encoder().encode(b);
-        return "https://www.pathofexile.com/fullscreen-passive-skill-tree/" + CharacterURL + base_string.replace("/", "_").replace("+", "-").replace("\n", "").replace("\r", "");
-    }
-
     public static String loadTree(String name, String account) throws IOException {
-        JSONObject treeInfo = readJsonFromUrl("https://www.pathofexile.com/character-window/get-passive-skills?accountName="+ account +"&character=" + name);
-        JSONArray ashes = treeInfo.getJSONArray("hashes");
+        JSONObject treeInfo = readJsonFromUrl("https://www.pathofexile.com/character-window/get-passive-skills?accountName=" + account + "&character=" + name);
+        JSONArray hashes_array = treeInfo.getJSONArray("hashes");
 
         JSONObject character = readJsonFromUrl("https://www.pathofexile.com/character-window/get-items?character=" + name + "&accountName=" + account);
         int class_ = character.getJSONObject("character").getInt("class");
 
-        int [] hashes = new int [ashes.length()];
+        int[] hashes = new int[hashes_array.length()];
 
-        for (int i = 0; i < ashes.length(); i++) {
-            hashes[i] =ashes.getInt(i);
+        for (int i = 0; i < hashes_array.length(); i++) {
+            hashes[i] = hashes_array.getInt(i);
         }
 
         if (name.equals(lastName) && hashes.length == treeSize) {
@@ -60,20 +44,32 @@ public class BuildTree {
         return lastUrl;
     }
 
-    public static String getCharacterURL(byte CharTypeByte) {
+    private static String saveToURL(int[] tree, int class_) {
+        byte[] b = new byte[(tree.length) * 2];
+        String characterURL = getCharacterURL((byte) class_);
+        int pos = 0;
+        for (int inn : tree) {
+            byte[] dbff = getBytes(inn);
+            b[pos++] = dbff[1];
+            b[pos++] = dbff[0];
+        }
+        String base_string = new sun.misc.BASE64Encoder().encode(b);
+        return "https://www.pathofexile.com/fullscreen-passive-skill-tree/" + characterURL + base_string.replace("/", "_").replace("+", "-").replace("\n", "").replace("\r", "");
+    }
+
+    private static String getCharacterURL(byte charTypeByte) {
         byte[] b = new byte[6];
-        byte[] b2 = GetBytes(3);
+        byte[] b2 = getBytes(3);
         for (int i = 0; i < b2.length; i++) {
             b[i] = b2[(b2.length - 1) - i];
         }
-        b[4] = CharTypeByte;
+        b[4] = charTypeByte;
         b[5] = 0;
         String base_string = new sun.misc.BASE64Encoder().encode(b);
         return base_string.replace("/", "_").replace("+", "-");
     }
 
-    public static byte[] GetBytes(int value)
-    {
+    public static byte[] getBytes(int value) {
         ByteBuffer buffer = ByteBuffer.allocate(4).order(ByteOrder.nativeOrder());
         buffer.putInt(value);
         return buffer.array();
