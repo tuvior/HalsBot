@@ -72,7 +72,7 @@ public class PoE {
             qChar = false;
         } catch (JSONException e) {
             JSONObject character = readJsonFromUrl(exiletools_ladder_url + "&charName=" + account);
-            character = character.getJSONObject((String) character.keys().next());
+            character = character.getJSONObject(character.keys().next());
             league = character.getString("league");
             characterName = account;
             qChar = true;
@@ -161,7 +161,7 @@ public class PoE {
         int level;
         if (qChar) {
             JSONObject character = readJsonFromUrl(exiletools_ladder_url + "&charName=" + account);
-            character = character.getJSONObject((String) character.keys().next());
+            character = character.getJSONObject(character.keys().next());
 
             rank = Integer.parseInt(character.getString("rank"));
             level = Integer.parseInt(character.getString("level"));

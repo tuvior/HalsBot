@@ -16,6 +16,7 @@ public class Realm {
     private TwitchBot bot;
     private RealmDropList droplist;
     private String realmeye;
+    private String realmeyeID;
 
     private String realm;
 
@@ -24,6 +25,7 @@ public class Realm {
         this.bot = bot;
         this.realmeye = realmeye;
         this.droplist = new RealmDropList();
+        realmeyeID = realmeye.substring(realmeye.indexOf("/player/") + 8);
         realm = "";
 
     }
@@ -56,7 +58,7 @@ public class Realm {
 
     public void getServer() {
         try {
-            JSONObject realmeye = readJsonFromUrl("https://nightfirec.at/realmeye-api/?id=0J92LSv0w08");
+            JSONObject realmeye = readJsonFromUrl("https://nightfirec.at/realmeye-api/?id=" + realmeyeID);
             JSONArray characters = realmeye.getJSONArray("characters");
             String server = characters.getJSONObject(0).getString("last_server");
             bot.sendMessage(channel, "Currently in: " + server);
@@ -64,5 +66,4 @@ public class Realm {
             e.printStackTrace();
         }
     }
-
 }

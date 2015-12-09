@@ -1,51 +1,48 @@
 package TwitchBot;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-
-import TwitchBot.droplist.RealmDropList;
 import TwitchBot.poe.PoE;
 import TwitchBot.realm.Realm;
 import TwitchBot.title.PageTitle;
 import TwitchBot.userlist.UserList;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.jibble.pircbot.NickAlreadyInUseException;
 import org.jibble.pircbot.PircBot;
 import org.json.JSONObject;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Set;
+import java.util.TimeZone;
 
 import static TwitchBot.jsonutil.JSONUtil.readJsonFromUrl;
 
 public class TwitchBot extends PircBot {
 
     public Set<String> ignoredUsers;
-
     public String master;
     private String oauth;
     private String twitchChannel;
-
     private ScriptManager scripts;
     private boolean title = true;
+    private UserList userList;
     public PoE poe;
     public Realm realm;
-    private UserList userList;
 
     /**
-     * @param name the name of the bot
-     * @param master name of the user that will be allowed to use admin commands
-     * @param oauth authentication code for twitch connection, see https://dev.twitter.com/oauth/reference/get/oauth/authenticate
+     * CONFIG
+     */
+
+    private String realmeyeLink = "http://www.realmeye.com/player/0J92LSv0w08";
+    private String poeAccountName = "Hals";
+
+    /**
+     * @param name          the name of the bot
+     * @param master        name of the user that will be allowed to use admin commands
+     * @param oauth         authentication code for twitch connection, see https://dev.twitter.com/oauth/reference/get/oauth/authenticate
      * @param twitchChannel twitch channel the bot will operate in
      * @throws IOException
      */
@@ -53,8 +50,8 @@ public class TwitchBot extends PircBot {
         setName(name);
         setEncoding("utf-8");
         scripts = new ScriptManager(this);
-        poe = new PoE(this, "#" + twitchChannel, "Hals");
-        realm = new Realm(this, "#" + twitchChannel, "http://www.realmeye.com/player/0J92LSv0w08");
+        poe = new PoE(this, "#" + twitchChannel, poeAccountName);
+        realm = new Realm(this, "#" + twitchChannel, realmeyeLink);
 
         this.master = master;
         this.oauth = oauth;
@@ -178,19 +175,13 @@ public class TwitchBot extends PircBot {
         } else if (message.equalsIgnoreCase("!tree")) {
             poe.tree();
         } else if (message.equalsIgnoreCase("!commands")) {
-            try {
-                JSONObject t_channel = readJsonFromUrl("https://api.twitch.tv/kraken/channels/" + twitchChannel);
-                if (t_channel.getString("game").equals("Realm of the Mad God")) {
-                    String commands = "!server, !realmeye, !drops";
-                    sendMessage(channel, commands);
-                } else {
-                    String commands = "!rank, !rank <accountname / charactername>, !profile, !tree, !ladder, !racerank, !racerank <accountname / charactername>, !racetime, !raceladder, !racemods, !drops";
-                    sendMessage(channel, commands);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (getCurrentGame().equals("Realm of the Mad God")) {
+                String commands = "!server, !realmeye, !drops";
+                sendMessage(channel, commands);
+            } else {
+                String commands = "!rank, !rank <accountname / charactername>, !profile, !tree, !ladder, !racerank, !racerank <accountname / charactername>, !racetime, !raceladder, !racemods, !drops";
+                sendMessage(channel, commands);
             }
-
         }
 
         //Realm Commands
@@ -207,33 +198,20 @@ public class TwitchBot extends PircBot {
             realm.getRealm();
         } else if (message.equalsIgnoreCase("!server")) {
             realm.getServer();
-        }else if (message.equalsIgnoreCase("!realmeye")) {
+        } else if (message.equalsIgnoreCase("!realmeye")) {
             realm.getRealmeye();
-        }
-
-
-        else if (message.equalsIgnoreCase("!drops")) {
-            try {
-                JSONObject t_channel = readJsonFromUrl("https://api.twitch.tv/kraken/channels/" + twitchChannel);
-                if (t_channel.getString("game").equals("Realm of the Mad God")) {
-                    realm.getDrops();
-                } else {
-                    poe.getDrops();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        } else if (message.equalsIgnoreCase("!drops")) {
+            if (getCurrentGame().equals("Realm of the Mad God")) {
+                realm.getDrops();
+            } else {
+                poe.getDrops();
             }
 
         } else if (message.equalsIgnoreCase("!removedrop")) {
-            try {
-                JSONObject t_channel = readJsonFromUrl("https://api.twitch.tv/kraken/channels/" + twitchChannel);
-                if (t_channel.getString("game").equals("Realm of the Mad God")) {
-                    realm.removeDrop();
-                } else {
-                    poe.removeDrop();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (getCurrentGame().equals("Realm of the Mad God")) {
+                realm.removeDrop();
+            } else {
+                poe.removeDrop();
             }
 
         } else if (message.toLowerCase().startsWith("!adddrop")) {
@@ -243,15 +221,10 @@ public class TwitchBot extends PircBot {
             }
             String drop = message.substring(9);
             if (!drop.equals("")) {
-                try {
-                    JSONObject t_channel = readJsonFromUrl("https://api.twitch.tv/kraken/channels/" + twitchChannel);
-                    if (t_channel.getString("game").equals("Realm of the Mad God")) {
-                        realm.addDrop(drop);
-                    } else {
-                        poe.addDrop(drop);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (getCurrentGame().equals("Realm of the Mad God")) {
+                    realm.addDrop(drop);
+                } else {
+                    poe.addDrop(drop);
                 }
             }
         }
@@ -330,8 +303,19 @@ public class TwitchBot extends PircBot {
 
     }
 
+    private String getCurrentGame() {
+        try {
+            JSONObject t_channel = readJsonFromUrl("https://api.twitch.tv/kraken/channels/" + twitchChannel);
+            return t_channel.getString("game");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
     public void echo(String message) {
-        System.out.println("["+ getName() +"]: " + getTimeStamp() + ": " + message);
+        System.out.println("[" + getName() + "]: " + getTimeStamp() + ": " + message);
     }
 
     public static String getTimeStamp() {

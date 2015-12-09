@@ -78,8 +78,4 @@ public class BuildTree {
         buffer.putInt(value);
         return buffer.array();
     }
-
-    public static void main(String[] args) throws IOException {
-        loadTree("HalsBored", "Hals");
-    }
 }
