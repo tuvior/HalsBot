@@ -4,6 +4,8 @@
 /logs/
 /scripts/
 droplist.txt
+realm_droplist.txt
+poe_droplist.txt
 viewers.csv
 /src/META-INF/
 .project
