@@ -75,11 +75,6 @@ public class TwitchBot extends PircBot {
     }
 
     @Override
-    protected void onUnknown(String line) {
-        System.out.println(line);
-    }
-
-    @Override
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
         echo("<" + sender + "> " + message);
         userList.updateUser(sender);
@@ -276,10 +271,9 @@ public class TwitchBot extends PircBot {
     }
 
     @Override
-    public void onPrivateMessage(String sender, String login, String hostname,
-                                 String message) {
+    public void onPrivateMessage(String sender, String login, String hostname, String message) {
         scripts.onPrivateMessage(sender, login, hostname, message);
-        System.out.println(message);
+        echo("<- <" + sender + "> " + message);
         if (message.contains("join")) {
             if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
                 this.sendMessage(sender, "User not authorized.");
@@ -292,7 +286,6 @@ public class TwitchBot extends PircBot {
             String newChannel = message.substring(message.indexOf("#"));
             this.sendMessage(sender, "Channel " + newChannel + " joined.");
             this.joinChannel(newChannel);
-            this.sendMessage(newChannel, "HalsBot™ at your service.");
         } else if (message.toLowerCase().contains("msg")) {
             if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
                 this.sendMessage(sender, "User not authorized.");
@@ -307,6 +300,12 @@ public class TwitchBot extends PircBot {
                 this.sendMessage(com[1], messag);
             }
         }
+    }
+
+
+    @Override
+    protected void onUnknown(String line) {
+        echo(line);
     }
 
     public void log(String channel, String nick, String message)
