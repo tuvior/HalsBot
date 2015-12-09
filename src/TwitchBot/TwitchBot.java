@@ -6,6 +6,7 @@ import TwitchBot.title.PageTitle;
 import TwitchBot.userlist.UserList;
 import org.jibble.pircbot.NickAlreadyInUseException;
 import org.jibble.pircbot.PircBot;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
@@ -306,7 +307,13 @@ public class TwitchBot extends PircBot {
     private String getCurrentGame() {
         try {
             JSONObject t_channel = readJsonFromUrl("https://api.twitch.tv/kraken/channels/" + twitchChannel);
-            return t_channel.getString("game");
+            String game;
+            try {
+                game = t_channel.getString("game");
+            } catch (JSONException e) {
+                game = "";
+            }
+            return game;
         } catch (IOException e) {
             e.printStackTrace();
         }
