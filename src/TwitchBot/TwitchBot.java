@@ -25,14 +25,13 @@ public class TwitchBot extends PircBot {
 
     public Set<String> ignoredUsers;
     public String master;
+    public PoE poe;
+    public Realm realm;
     private String oauth;
     private String twitchChannel;
     private ScriptManager scripts;
     private boolean title = true;
     private UserList userList;
-    public PoE poe;
-    public Realm realm;
-
     /**
      * CONFIG
      */
@@ -58,6 +57,12 @@ public class TwitchBot extends PircBot {
         this.oauth = oauth;
         this.twitchChannel = twitchChannel;
         userList = new UserList("viewers.csv");
+    }
+
+    public static String getTimeStamp() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return sdf.format(new Date());
     }
 
     public void connectToTwitch() {
@@ -278,7 +283,6 @@ public class TwitchBot extends PircBot {
         }
     }
 
-
     @Override
     protected void onUnknown(String line) {
         echo(line);
@@ -325,12 +329,6 @@ public class TwitchBot extends PircBot {
 
     public void echo(String message) {
         System.out.println("[" + getName() + "]: " + getTimeStamp() + ": " + message);
-    }
-
-    public static String getTimeStamp() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return sdf.format(new Date());
     }
 
 }

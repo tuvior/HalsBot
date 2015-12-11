@@ -19,17 +19,17 @@ public class RealmDropList {
         return drop.name;
     }
 
-    public Drop removeLast(){
+    public Drop removeLast() {
         Drop removed = drops.removeFirst();
         writeToFile();
         return removed;
     }
 
-    public String getDrops () {
+    public String getDrops() {
         String dropss = "";
         int i = 0;
         for (Drop drop : drops) {
-            if(i > 10) break;
+            if (i > 10) break;
 
             dropss = dropss + " " + drop.toString();
             i++;

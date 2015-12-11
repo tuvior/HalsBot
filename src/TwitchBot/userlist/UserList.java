@@ -26,7 +26,7 @@ public class UserList {
                 bufferedReader.readLine();
 
                 while ((line = bufferedReader.readLine()) != null) {
-                    String [] user_data = line.split(",");
+                    String[] user_data = line.split(",");
                     User user = new User(user_data[0], Integer.parseInt(user_data[1]));
                     users.put(user_data[0], user);
                 }

@@ -5,12 +5,6 @@ public class Drop {
     public String name;
     public String wikiUrl;
 
-
-    @Override
-    public String toString() {
-        return name + " (" + wikiUrl + ")";
-    }
-
     static String toTitleCase(String string) {
         string = string.toLowerCase();
         String[] arr = string.split(" ");
@@ -21,5 +15,10 @@ public class Drop {
                     .append(anArr.substring(1)).append(" ");
         }
         return sb.toString().trim();
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + wikiUrl + ")";
     }
 }

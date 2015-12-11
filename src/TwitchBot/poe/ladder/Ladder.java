@@ -1,14 +1,13 @@
 package TwitchBot.poe.ladder;
 
+import TwitchBot.poe.ladder.Character.Class;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import TwitchBot.poe.ladder.Character.Class;
 
 import static TwitchBot.jsonutil.JSONUtil.readJsonFromUrl;
 

@@ -4,22 +4,11 @@ import org.json.JSONObject;
 
 public class Character {
 
-    public enum Class {
-        Duelist,
-        Marauder,
-        Ranger,
-        Scion,
-        Shadow,
-        Templar,
-        Witch
-    }
-
     private String name;
     private int level;
     private Class charClass;
     private long exp;
     private long time;
-
     public Character(String name, int level, Class charClass, long exp, long time) {
         this.name = name;
         this.level = level;
@@ -83,6 +72,16 @@ public class Character {
 
     public long getExp() {
         return exp;
+    }
+
+    public enum Class {
+        Duelist,
+        Marauder,
+        Ranger,
+        Scion,
+        Shadow,
+        Templar,
+        Witch
     }
 
 }

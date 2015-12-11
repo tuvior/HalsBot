@@ -52,7 +52,7 @@ public class Realm {
         this.realm = realm;
     }
 
-    public void getRealm(){
+    public void getRealm() {
         bot.sendMessage(channel, "Currently in: " + realm);
     }
 

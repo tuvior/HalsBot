@@ -19,11 +19,11 @@ public class POEDropList {
         return drop.name;
     }
 
-    public String getDrops () {
+    public String getDrops() {
         String dropss = "";
         int i = 0;
         for (Drop drop : drops) {
-            if(i > 10) break;
+            if (i > 10) break;
 
             dropss = dropss + " " + drop.toString();
             i++;
@@ -32,7 +32,7 @@ public class POEDropList {
         return dropss.trim();
     }
 
-    public Drop removeLast(){
+    public Drop removeLast() {
         Drop removed = drops.removeFirst();
         writeToFile();
         return removed;

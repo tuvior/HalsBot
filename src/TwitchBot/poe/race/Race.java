@@ -3,7 +3,7 @@ package TwitchBot.poe.race;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -48,50 +48,6 @@ public class Race {
         Date register_date = format.parse(obj.getString("registerAt"));
 
         return new Race(obj.getString("id"), obj.getString("description"), obj.getString("url"), start_date, register_date, end_date, parseMods(obj.getString("id")));
-    }
-
-    public boolean hasStarted() {
-        return start.before(new Date());
-    }
-
-    public boolean isRunning() {
-        return start.before(new Date()) && end.after(new Date());
-    }
-
-    public Date getEnd() {
-        return end;
-    }
-
-    public Date getStart() {
-        return start;
-    }
-
-    public Date getRegisterDate() {
-        return register;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public HashSet<RaceModifier> getMods() {
-        return mods;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public long timeLeft() {
-        return end.getTime() - new Date().getTime();
-    }
-
-    public long timeToStart() {
-        return start.getTime() - new Date().getTime();
     }
 
     private static HashSet<RaceModifier> parseMods(String name) {
@@ -196,5 +152,49 @@ public class Race {
             mods.add(RaceModifier.Turbo);
         }
         return mods;
+    }
+
+    public boolean hasStarted() {
+        return start.before(new Date());
+    }
+
+    public boolean isRunning() {
+        return start.before(new Date()) && end.after(new Date());
+    }
+
+    public Date getEnd() {
+        return end;
+    }
+
+    public Date getStart() {
+        return start;
+    }
+
+    public Date getRegisterDate() {
+        return register;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public HashSet<RaceModifier> getMods() {
+        return mods;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public long timeLeft() {
+        return end.getTime() - new Date().getTime();
+    }
+
+    public long timeToStart() {
+        return start.getTime() - new Date().getTime();
     }
 }
