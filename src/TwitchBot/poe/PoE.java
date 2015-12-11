@@ -25,6 +25,7 @@ public class PoE {
 
     private final static String exiletools_ladder_url = "http://api.exiletools.com/ladder?league=allActive";
     private final static String exiletools_leaguelist_url = "http://api.exiletools.com/ladder?listleagues=1";
+    private final static String lootfilter_url = "http://pastebin.com/Af00CbhA";
 
     private TwitchBot bot;
     private String account;
@@ -88,6 +89,10 @@ public class PoE {
             JSONObject leagues = readJsonFromUrl(exiletools_leaguelist_url);
             this.league = leagues.getJSONObject(league).getString("apiName");
         }
+    }
+
+    public void lootfilter() {
+        bot.sendMessage(channel, "NeverSink's loot filter: " + lootfilter_url);
     }
 
     public void track(String account) {

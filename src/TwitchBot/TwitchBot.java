@@ -180,6 +180,8 @@ public class TwitchBot extends PircBot {
             poe.getRaceLadder();
         } else if (message.equalsIgnoreCase("!profile")) {
             poe.getProfilePage();
+        } else if (message.equalsIgnoreCase("!filter")) {
+            poe.lootfilter();
         } else if (message.equalsIgnoreCase("!tree")) {
             poe.tree();
         } else if (message.equalsIgnoreCase("!commands")) {
@@ -187,7 +189,7 @@ public class TwitchBot extends PircBot {
                 String commands = "!server, !realmeye, !drops, !about";
                 sendMessage(channel, commands);
             } else {
-                String commands = "!rank, !rank <accountname / charactername>, !profile, !tree, !ladder, !racerank, !racerank <accountname / charactername>, !racetime, !raceladder, !racemods, !drops, !about";
+                String commands = "!rank, !rank <accountname / charactername>, !profile, !tree, !filter, !ladder, !racerank, !racerank <accountname / charactername>, !racetime, !raceladder, !racemods, !drops, !about";
                 sendMessage(channel, commands);
             }
         }
