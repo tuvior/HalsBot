@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import static TwitchBot.jsonutil.JSONUtil.readJsonFromUrl;
+import static TwitchBot.jsonutil.JSONUtil.readJsonFromUrlArray;
 
 public class BuildTree {
 
@@ -19,8 +20,13 @@ public class BuildTree {
         JSONObject treeInfo = readJsonFromUrl("https://www.pathofexile.com/character-window/get-passive-skills?accountName=" + account + "&character=" + name);
         JSONArray hashes_array = treeInfo.getJSONArray("hashes");
 
-        JSONObject character = readJsonFromUrl("https://www.pathofexile.com/character-window/get-items?character=" + name + "&accountName=" + account);
-        int class_ = character.getJSONObject("character").getInt("class");
+        JSONArray characters = readJsonFromUrlArray("https://www.pathofexile.com/character-window/get-characters?accountName=" + account);
+        int class_ = 0;
+        for (int i = 0; i < characters.length(); i++) {
+            if (characters.getJSONObject(i).getString("name").equals(name)){
+                class_ = characters.getJSONObject(i).getInt("classId");
+            }
+        }
 
         int[] hashes = new int[hashes_array.length()];
 
