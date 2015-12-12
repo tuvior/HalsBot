@@ -7,6 +7,7 @@ import TwitchBot.poe.ladder.Ladder;
 import TwitchBot.poe.ladder.RankStatus;
 import TwitchBot.poe.race.Race;
 import TwitchBot.poe.race.RaceModifier;
+import TwitchBot.poe.scoketed.Equipment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -119,6 +120,16 @@ public class PoE {
             e.printStackTrace();
         }
 
+    }
+
+    public void gems() {
+        try {
+            initializeLeague(account);
+            Equipment equip = Equipment.loadFromJSon(characterName, account);
+            bot.sendMessage(channel, equip.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getDrops() {

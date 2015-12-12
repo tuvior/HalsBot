@@ -184,12 +184,14 @@ public class TwitchBot extends PircBot {
             poe.lootfilter();
         } else if (message.equalsIgnoreCase("!tree")) {
             poe.tree();
+        } else if (message.equalsIgnoreCase("!gems")) {
+            poe.gems();
         } else if (message.equalsIgnoreCase("!commands")) {
             if (getCurrentGame().equals("Realm of the Mad God")) {
                 String commands = "!server, !realmeye, !drops, !about";
                 sendMessage(channel, commands);
             } else {
-                String commands = "!rank, !rank <accountname / charactername>, !profile, !tree, !filter, !ladder, !racerank, !racerank <accountname / charactername>, !racetime, !raceladder, !racemods, !drops, !about";
+                String commands = "!rank, !rank <accountname / charactername>, !profile, !tree, !gems, !filter, !ladder, !racerank, !racerank <accountname / charactername>, !racetime, !raceladder, !racemods, !drops, !about";
                 sendMessage(channel, commands);
             }
         }
