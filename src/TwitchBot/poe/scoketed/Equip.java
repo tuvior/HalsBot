@@ -48,9 +48,9 @@ public class Equip {
                 line = line + " + " + g;
             }
             line = line.substring(3);
-            result = result + ", " + line;
+            result = result + " | " + line;
         }
-        return result.substring(2);
+        return result.substring(3);
     }
 
 

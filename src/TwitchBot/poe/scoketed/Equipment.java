@@ -35,7 +35,7 @@ public class Equipment {
         String result = "";
         for (Equip e : equips) {
             if(!e.toString().equals("")) {
-                result = result + ",  " + e.toString();
+                result = result + " | " + e.toString();
             }
         }
 
