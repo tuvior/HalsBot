@@ -7,7 +7,7 @@ import TwitchBot.poe.ladder.Ladder;
 import TwitchBot.poe.ladder.RankStatus;
 import TwitchBot.poe.race.Race;
 import TwitchBot.poe.race.RaceModifier;
-import TwitchBot.poe.scoketed.Equipment;
+import TwitchBot.poe.equip.Equipment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -111,7 +111,7 @@ public class PoE {
         bot.sendMessage(channel, "Removed: " + removed);
     }
 
-    public void tree() {
+    public void getSkillTree() {
         try {
             initializeLeague(account);
             String treeUrl = BuildTree.loadTree(characterName, account);
@@ -122,7 +122,7 @@ public class PoE {
 
     }
 
-    public void gems() {
+    public void getGems() {
         try {
             initializeLeague(account);
             Equipment equip = Equipment.loadFromJSon(characterName, account);

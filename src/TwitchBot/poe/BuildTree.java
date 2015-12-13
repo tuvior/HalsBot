@@ -23,7 +23,7 @@ public class BuildTree {
         JSONArray characters = readJsonFromUrlArray("https://www.pathofexile.com/character-window/get-characters?accountName=" + account);
         int class_ = 0;
         for (int i = 0; i < characters.length(); i++) {
-            if (characters.getJSONObject(i).getString("name").equals(name)){
+            if (characters.getJSONObject(i).getString("name").equals(name)) {
                 class_ = characters.getJSONObject(i).getInt("classId");
             }
         }
@@ -60,7 +60,7 @@ public class BuildTree {
             b[pos++] = dbff[0];
         }
         String base_string = new sun.misc.BASE64Encoder().encode(b);
-        return "https://www.pathofexile.com/fullscreen-passive-skill-tree/" + characterURL + base_string.replace("/", "_").replace("+", "-").replace("\n", "").replace("\r", "");
+        return "https://www.pathofexile.com/fullscreen-passive-skill-getSkillTree/" + characterURL + base_string.replace("/", "_").replace("+", "-").replace("\n", "").replace("\r", "");
     }
 
     private static String getCharacterURL(byte charTypeByte) {

@@ -1,4 +1,4 @@
-package TwitchBot.poe.scoketed;
+package TwitchBot.poe.equip;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,7 +12,7 @@ public class Equipment {
 
     private ArrayList<Equip> equips;
 
-    private Equipment (ArrayList<Equip> equips) {
+    private Equipment(ArrayList<Equip> equips) {
         this.equips = equips;
     }
 
@@ -22,7 +22,9 @@ public class Equipment {
         JSONArray items = json.getJSONArray("items");
         for (Object i : items) {
             JSONObject item = (JSONObject) i;
-            if (item.getString("inventoryId").equals("Weapon2") || item.getString("inventoryId").equals("Offhand2")) continue;
+            if (item.getString("inventoryId").equals("Weapon2") || item.getString("inventoryId").equals("Offhand2")) {
+                continue;
+            }
             Equip equip = Equip.fromJSon(item);
             equipl.add(equip);
         }
@@ -33,17 +35,12 @@ public class Equipment {
     @Override
     public String toString() {
         String result = "";
-        for (Equip e : equips) {
-            if(!e.toString().equals("")) {
-                result = result + " | " + e.toString();
+        for (Equip equip : equips) {
+            if (!equip.toString().equals("")) {
+                result = result + " | " + equip.toString();
             }
         }
 
         return result.substring(3);
-    }
-
-    public static void main(String[] args) throws IOException {
-        Equipment e = loadFromJSon("HalsCrispy", "Hals");
-        System.out.println(e);
     }
 }
