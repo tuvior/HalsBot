@@ -9,6 +9,7 @@ public class Character {
     private Class charClass;
     private long exp;
     private long time;
+
     public Character(String name, int level, Class charClass, long exp, long time) {
         this.name = name;
         this.level = level;

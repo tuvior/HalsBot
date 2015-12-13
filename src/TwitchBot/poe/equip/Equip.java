@@ -8,8 +8,8 @@ import java.util.HashMap;
 
 public class Equip {
 
-    private String name;
     public HashMap<Integer, ArrayList<Gem>> gems;
+    private String name;
 
     private Equip(String name, HashMap<Integer, ArrayList<Gem>> gems) {
         this.name = name;

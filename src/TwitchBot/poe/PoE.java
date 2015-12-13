@@ -3,11 +3,11 @@ package TwitchBot.poe;
 import TwitchBot.TwitchBot;
 import TwitchBot.droplist.Drop;
 import TwitchBot.droplist.POEDropList;
+import TwitchBot.poe.equip.Equipment;
 import TwitchBot.poe.ladder.Ladder;
 import TwitchBot.poe.ladder.RankStatus;
 import TwitchBot.poe.race.Race;
 import TwitchBot.poe.race.RaceModifier;
-import TwitchBot.poe.equip.Equipment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
