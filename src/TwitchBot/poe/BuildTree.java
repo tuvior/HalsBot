@@ -60,7 +60,7 @@ public class BuildTree {
             b[pos++] = dbff[0];
         }
         String base_string = new sun.misc.BASE64Encoder().encode(b);
-        return "https://www.pathofexile.com/fullscreen-passive-skill-getSkillTree/" + characterURL + base_string.replace("/", "_").replace("+", "-").replace("\n", "").replace("\r", "");
+        return "https://www.pathofexile.com/fullscreen-passive-skill-tree/" + characterURL + base_string.replace("/", "_").replace("+", "-").replace("\n", "").replace("\r", "");
     }
 
     private static String getCharacterURL(byte charTypeByte) {
