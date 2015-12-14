@@ -1,5 +1,6 @@
 package TwitchBot;
 
+import TwitchBot.config.Config;
 import TwitchBot.poe.PoE;
 import TwitchBot.realm.Realm;
 import TwitchBot.title.PageTitle;
@@ -32,30 +33,19 @@ public class TwitchBot extends PircBot {
     private ScriptManager scripts;
     private boolean title = true;
     private UserList userList;
-    /**
-     * CONFIG
-     */
 
-    private String realmeyeLink = "http://www.realmeye.com/player/0J92LSv0w08";
-    private String poeAccountName = "Hals";
+    public TwitchBot() throws IOException {
+        Config config = new Config();
 
-    /**
-     * @param name          the name of the bot
-     * @param master        name of the user that will be allowed to use admin commands
-     * @param oauth         authentication code for twitch connection, see https://dev.twitter.com/oauth/reference/get/oauth/authenticate
-     * @param twitchChannel twitch channel the bot will operate in
-     * @throws IOException
-     */
-    public TwitchBot(String name, String master, String oauth, String twitchChannel) throws IOException {
-        setName(name);
+        setName(config.name);
         setEncoding("utf-8");
         scripts = new ScriptManager(this);
-        poe = new PoE(this, "#" + twitchChannel, poeAccountName);
-        realm = new Realm(this, "#" + twitchChannel, realmeyeLink);
+        poe = new PoE(this, "#" + config.twitch, config.poeAccount);
+        realm = new Realm(this, "#" + config.twitch, config.realmeye);
 
-        this.master = master;
-        this.oauth = oauth;
-        this.twitchChannel = twitchChannel;
+        this.master = config.master;
+        this.oauth = config.oauth;
+        this.twitchChannel = config.twitch;
         userList = new UserList("viewers.csv");
     }
 

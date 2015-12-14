@@ -1,6 +1,5 @@
 *.iml
 
-/src/TwitchBot/RunBot.java
 /logs/
 /scripts/
 droplist.txt
@@ -11,6 +10,7 @@ viewers.csv
 .project
 .classpath
 .settings
+config.properties
 
 
 .idea/
