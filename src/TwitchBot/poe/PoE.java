@@ -6,6 +6,7 @@ import TwitchBot.droplist.POEDropList;
 import TwitchBot.poe.equip.Equipment;
 import TwitchBot.poe.ladder.Ladder;
 import TwitchBot.poe.ladder.RankStatus;
+import TwitchBot.poe.race.NoRaceException;
 import TwitchBot.poe.race.Race;
 import TwitchBot.poe.race.RaceModifier;
 import org.json.JSONException;
@@ -245,6 +246,8 @@ public class PoE {
             } else {
                 bot.sendMessage(channel, "No race currently active");
             }
+        } catch (NoRaceException nr) {
+            bot.sendMessage(channel, "There are no races scheduled at the moment");
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -264,6 +267,8 @@ public class PoE {
             } else {
                 bot.sendMessage(channel, "No race found");
             }
+        } catch (NoRaceException nr) {
+            bot.sendMessage(channel, "There are no races scheduled at the moment");
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -288,6 +293,8 @@ public class PoE {
                     e.printStackTrace();
                 }
             }
+        } catch (NoRaceException nr) {
+            bot.sendMessage(channel, "There are no races scheduled at the moment");
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -328,6 +335,8 @@ public class PoE {
             } else {
                 bot.sendMessage(channel, "No race found");
             }
+        } catch (NoRaceException nr) {
+            bot.sendMessage(channel, "There are no races scheduled at the moment");
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }

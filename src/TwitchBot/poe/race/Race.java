@@ -33,8 +33,11 @@ public class Race {
         this.url = url;
     }
 
-    public static Race getCurrentRace() throws IOException, ParseException {
+    public static Race getCurrentRace() throws IOException, ParseException, NoRaceException {
         JSONArray ladder = readJsonFromUrlArray("http://api.pathofexile.com/leagues?type=event");
+        if (ladder.length() == 0) {
+            throw new NoRaceException();
+        }
         JSONObject race = ladder.getJSONObject(0);
         return fromJson(race);
     }

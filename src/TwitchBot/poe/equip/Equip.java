@@ -53,11 +53,13 @@ public class Equip {
         String result = "";
         for (ArrayList<Gem> gemGroup : gems.values()) {
             String group = "";
-            for (Gem gem : gemGroup) {
-                group = group + " + " + gem;
+            if (gemGroup.size() > 0) {
+                for (Gem gem : gemGroup) {
+                    group = group + " + " + gem;
+                }
+                group = group.substring(3);
+                result = result + " | " + group;
             }
-            group = group.substring(3);
-            result = result + " | " + group;
         }
         return result.substring(3);
     }

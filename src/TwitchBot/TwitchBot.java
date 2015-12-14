@@ -59,7 +59,7 @@ public class TwitchBot extends PircBot {
         userList = new UserList("viewers.csv");
     }
 
-    public static String getTimeStamp() {
+    private static String getTimeStamp() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         return sdf.format(new Date());
