@@ -61,7 +61,10 @@ public class Equip {
                 result = result + " | " + group;
             }
         }
-        return result.substring(3);
+        if (result.contains("|")) {
+            result = result.substring(3);
+        }
+        return result;
     }
 
 
