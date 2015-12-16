@@ -25,8 +25,12 @@ public class POEDropList {
         for (Drop drop : drops) {
             if (i > 10) break;
 
-            dropss = dropss + " " + drop.toString();
+            dropss = dropss + " | " + drop.toString();
             i++;
+        }
+
+        if (dropss.contains("|")) {
+            dropss = dropss.substring(3);
         }
 
         return dropss.trim();
