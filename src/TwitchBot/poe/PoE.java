@@ -287,11 +287,6 @@ public class PoE {
             }
             for (RaceModifier mod : race.getMods()) {
                 bot.sendMessage(channel, mod.getDescription());
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         } catch (NoRaceException nr) {
             bot.sendMessage(channel, "There are no races scheduled at the moment");

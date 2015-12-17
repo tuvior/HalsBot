@@ -23,7 +23,7 @@ public class Config {
     private void loadConfig() throws IOException {
         File conf = new File("config.properties");
         if (!conf.exists()) {
-            return;
+            throw new IOException("Missing config file");
         }
         Properties config = new Properties();
         FileInputStream fis = new FileInputStream("config.properties");

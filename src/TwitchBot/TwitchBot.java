@@ -37,6 +37,7 @@ public class TwitchBot extends PircBot {
     public TwitchBot() throws IOException {
         Config config = new Config();
 
+        setMessageDelay(1300);
         setName(config.name);
         setEncoding("utf-8");
         scripts = new ScriptManager(this);
