@@ -10,10 +10,9 @@ import org.jibble.pircbot.PircBot;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,6 +22,8 @@ import java.util.TimeZone;
 import static TwitchBot.jsonutil.JSONUtil.readJsonFromUrl;
 
 public class TwitchBot extends PircBot {
+
+    private static final String now_playing_url = "http://sub.fm/now-playing.php";
 
     public Set<String> ignoredUsers;
     public String master;
@@ -147,6 +148,8 @@ public class TwitchBot extends PircBot {
             sendMessage(channel, "Added a coffee");
         } else if (message.equalsIgnoreCase("!coffee")) {
             sendMessage(channel, "Drank " + coffeeCounter.getCoffee() + " coffees.");
+        } else if (message.equalsIgnoreCase("!music")) {
+            sendMessage(channel, getCurrentlyPlaying());
         }
 
         // PoE Commands
@@ -331,6 +334,18 @@ public class TwitchBot extends PircBot {
         }
 
         return "";
+    }
+
+    private String getCurrentlyPlaying() {
+        try  {
+            InputStream is = new URL(now_playing_url).openStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            String playing = rd.readLine();
+            return playing;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return "";
+        }
     }
 
     public void echo(String message) {

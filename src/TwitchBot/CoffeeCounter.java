@@ -22,7 +22,7 @@ public class CoffeeCounter {
     private void writeToFile() {
         try {
             FileWriter writer = new FileWriter("coffee.txt");
-            writer.write(coffee + "");
+            writer.write(coffee + "\n");
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
