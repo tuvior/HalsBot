@@ -280,11 +280,6 @@ public class PoE {
 
             bot.sendMessage(channel, "Mods for " + race.getName() + ":");
 
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             for (RaceModifier mod : race.getMods()) {
                 bot.sendMessage(channel, mod.getDescription());
             }
