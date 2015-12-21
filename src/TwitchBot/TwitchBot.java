@@ -139,6 +139,10 @@ public class TwitchBot extends PircBot {
         } else if (message.equalsIgnoreCase("!about")) {
             sendMessage(channel, "HalsBot by Tuvior, https://github.com/tuvior/HalsBot");
         } else if (message.equalsIgnoreCase("!coffee+")) {
+            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
+                sendMessage(channel, "User not authorized.");
+                return;
+            }
             coffeeCounter.addCoffee();
             sendMessage(channel, "Added a coffee");
         } else if (message.equalsIgnoreCase("!coffee")) {
