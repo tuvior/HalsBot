@@ -33,6 +33,7 @@ public class TwitchBot extends PircBot {
     private ScriptManager scripts;
     private boolean title = true;
     private UserList userList;
+    private CoffeeCounter coffeeCounter;
 
     public TwitchBot() throws IOException {
         Config config = new Config();
@@ -43,6 +44,7 @@ public class TwitchBot extends PircBot {
         scripts = new ScriptManager(this);
         poe = new PoE(this, "#" + config.twitch, config.poeAccount);
         realm = new Realm(this, "#" + config.twitch, config.realmeye);
+        coffeeCounter = new CoffeeCounter();
 
         this.master = config.master;
         this.oauth = config.oauth;
@@ -134,8 +136,13 @@ public class TwitchBot extends PircBot {
             } else {
                 sendMessage(channel, "Invalid parameters.");
             }
-        } else if (message.toLowerCase().equals("!about")) {
+        } else if (message.equalsIgnoreCase("!about")) {
             sendMessage(channel, "HalsBot by Tuvior, https://github.com/tuvior/HalsBot");
+        } else if (message.equalsIgnoreCase("!coffee+")) {
+            coffeeCounter.addCoffee();
+            sendMessage(channel, "Added a coffee");
+        } else if (message.equalsIgnoreCase("!coffee")) {
+            sendMessage(channel, "Drank " + coffeeCounter.getCoffee() + " coffees.");
         }
 
         // PoE Commands

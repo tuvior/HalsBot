@@ -5,8 +5,7 @@ public class NoRaceException extends Exception {
         super("No race has been found");
     }
 
-    public NoRaceException(String message)
-    {
+    public NoRaceException(String message) {
         super(message);
     }
 }
