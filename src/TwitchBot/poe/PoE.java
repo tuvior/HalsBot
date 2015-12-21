@@ -261,9 +261,9 @@ public class PoE {
         try {
             Race race = Race.getCurrentRace();
             if (!race.hasStarted()) {
-                bot.sendMessage(channel, "Ladder and forum thread for " + race.getName() + ": " + race.getUrl() + "   League starts: " + race.getStart());
+                bot.sendMessage(channel, "Ladder and forum thread for " + race.getName() + ": " + race.getUrl() + "   Race starts: " + race.getStart());
             } else if (race.isRunning()) {
-                bot.sendMessage(channel, "Ladder and forum thread for " + race.getName() + ": " + race.getUrl() + "   League ends: " + race.getEnd());
+                bot.sendMessage(channel, "Ladder and forum thread for " + race.getName() + ": " + race.getUrl() + "   Race ends: " + race.getEnd());
             } else {
                 bot.sendMessage(channel, "No race found");
             }
