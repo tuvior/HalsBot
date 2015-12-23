@@ -51,12 +51,11 @@ public class PoE {
         bot.sendMessage(channel, "https://www.pathofexile.com/account/view-profile/" + account);
     }
 
-    public void initializeLeague(String account) throws IOException {
+    private void updateLeagueAndCharacter(String account, boolean checkQuery) throws IOException {
         String league = "";
         try {
             JSONObject characters = readJsonFromUrl(exiletools_ladder_url + "&accountName=" + account);
             Iterator<String> keys = characters.keys();
-
 
             long lastSeen = 0;
 
@@ -71,7 +70,6 @@ public class PoE {
                         lastSeen = last;
                         league = character.getString("league");
                         characterName = key.substring(key.indexOf(".") + 1);
-
                     }
                 }
             }
@@ -90,6 +88,10 @@ public class PoE {
         } else {
             JSONObject leagues = readJsonFromUrl(exiletools_leaguelist_url);
             this.league = leagues.getJSONObject(league).getString("apiName");
+        }
+
+        if (!checkQuery) {
+            qChar = true;
         }
     }
 
@@ -114,7 +116,7 @@ public class PoE {
 
     public void getSkillTree() {
         try {
-            initializeLeague(account);
+            updateLeagueAndCharacter(account, false);
             String treeUrl = BuildTree.loadTree(characterName, account);
             bot.sendMessage(channel, treeUrl);
         } catch (IOException e) {
@@ -125,7 +127,7 @@ public class PoE {
 
     public void getGems() {
         try {
-            initializeLeague(account);
+            updateLeagueAndCharacter(account, false);
             Equipment equip = Equipment.loadFromJSon(characterName, account);
             bot.sendMessage(channel, equip.toString());
         } catch (IOException e) {
@@ -141,18 +143,18 @@ public class PoE {
         if (account == null) {
             bot.sendMessage(channel, "No character being tracked at this time");
         } else {
-            rank(account);
+            rank(account, false);
         }
     }
 
-    public void rank(String target) {
+    public void rank(String query, boolean checkQuery) {
         try {
-            initializeLeague(target);
+            updateLeagueAndCharacter(query, checkQuery);
 
             if (league.equals("")) {
                 bot.sendMessage(channel, "No alive character found");
             } else {
-                getRank(target);
+                getRank(query);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -180,7 +182,7 @@ public class PoE {
         int rank;
         int level;
         if (qChar) {
-            JSONObject character = readJsonFromUrl(exiletools_ladder_url + "&charName=" + account);
+            JSONObject character = readJsonFromUrl(exiletools_ladder_url + "&charName=" + characterName);
             character = character.getJSONObject(character.keys().next());
 
             rank = Integer.parseInt(character.getString("rank"));
@@ -202,7 +204,7 @@ public class PoE {
             return;
         }
         try {
-            initializeLeague(account);
+            updateLeagueAndCharacter(account, false);
 
             if (league.equals("")) {
                 bot.sendMessage(channel, "No league found");

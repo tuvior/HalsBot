@@ -167,7 +167,7 @@ public class TwitchBot extends PircBot {
             poe.getRaceRank();
         } else if (message.toLowerCase().startsWith("!rank")) {
             String target = message.substring(6);
-            poe.rank(target);
+            poe.rank(target, true);
         } else if (message.toLowerCase().startsWith("!racetime")) {
             poe.raceTimeLeft();
         } else if (message.toLowerCase().startsWith("!racerank")) {
