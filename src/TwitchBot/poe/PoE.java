@@ -165,7 +165,7 @@ public class PoE {
         Ladder ladder = Ladder.getLadderForLeague(league);
         RankStatus rank;
         if (qChar) {
-            rank = ladder.getRankForQuery(account, true);
+            rank = ladder.getRankForQuery(characterName, true);
         } else {
             rank = ladder.getRankForQuery(account, false);
         }
