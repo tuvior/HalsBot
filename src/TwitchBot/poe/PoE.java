@@ -3,6 +3,7 @@ package TwitchBot.poe;
 import TwitchBot.TwitchBot;
 import TwitchBot.droplist.Drop;
 import TwitchBot.droplist.POEDropList;
+import TwitchBot.jsonutil.WebUtil;
 import TwitchBot.poe.equip.Equipment;
 import TwitchBot.poe.ladder.Ladder;
 import TwitchBot.poe.ladder.RankStatus;
@@ -20,14 +21,17 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static TwitchBot.jsonutil.JSONUtil.readJsonFromUrl;
+import static TwitchBot.jsonutil.WebUtil.readJsonFromUrl;
 
 public class PoE {
 
     private final static String exiletools_ladder_url = "http://api.exiletools.com/ladder?league=allActive";
     private final static String exiletools_leaguelist_url = "http://api.exiletools.com/ladder?listleagues=1";
     private final static String lootfilter_url = "http://pastebin.com/Af00CbhA";
+    private final static String profile_url = "https://www.pathofexile.com/account/view-profile/";
 
     private TwitchBot bot;
     private String account;
@@ -48,49 +52,64 @@ public class PoE {
     }
 
     public void getProfilePage() {
-        bot.sendMessage(channel, "https://www.pathofexile.com/account/view-profile/" + account);
+        bot.sendMessage(channel, profile_url + account);
     }
 
     private void updateLeagueAndCharacter(String account, boolean checkQuery) throws IOException {
-        String league = "";
-        try {
-            JSONObject characters = readJsonFromUrl(exiletools_ladder_url + "&accountName=" + account);
-            Iterator<String> keys = characters.keys();
+        if (checkQuery) {
+            String league = "";
+            try {
+                JSONObject characters = readJsonFromUrl(exiletools_ladder_url + "&accountName=" + account);
+                Iterator<String> keys = characters.keys();
 
-            long lastSeen = 0;
+                long lastSeen = 0;
 
-            while (keys.hasNext()) {
-                String key = keys.next();
-                if (characters.get(key) instanceof JSONObject) {
-                    JSONObject character = characters.getJSONObject(key);
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    if (characters.get(key) instanceof JSONObject) {
+                        JSONObject character = characters.getJSONObject(key);
 
-                    long last = Long.parseLong(character.getString("lastOnline"));
+                        long last = Long.parseLong(character.getString("lastOnline"));
 
-                    if (last > lastSeen) {
-                        lastSeen = last;
-                        league = character.getString("league");
-                        characterName = key.substring(key.indexOf(".") + 1);
+                        if (last > lastSeen) {
+                            lastSeen = last;
+                            league = character.getString("league");
+                            characterName = key.substring(key.indexOf(".") + 1);
+                        }
                     }
                 }
+                qChar = false;
+            } catch (JSONException e) {
+                JSONObject character = readJsonFromUrl(exiletools_ladder_url + "&charName=" + account);
+                character = character.getJSONObject(character.keys().next());
+                league = character.getString("league");
+                characterName = account;
+                qChar = true;
             }
-            qChar = false;
-        } catch (JSONException e) {
-            JSONObject character = readJsonFromUrl(exiletools_ladder_url + "&charName=" + account);
-            character = character.getJSONObject(character.keys().next());
-            league = character.getString("league");
-            characterName = account;
-            qChar = true;
-        }
 
-        if (league.equals("")) {
-            bot.echo("League not found");
-            this.league = "";
+            if (league.equals("")) {
+                bot.echo("League not found");
+                this.league = "";
+            } else {
+                JSONObject leagues = readJsonFromUrl(exiletools_leaguelist_url);
+                this.league = leagues.getJSONObject(league).getString("apiName");
+            }
         } else {
-            JSONObject leagues = readJsonFromUrl(exiletools_leaguelist_url);
-            this.league = leagues.getJSONObject(league).getString("apiName");
-        }
+            String profilePage = WebUtil.readPage(profile_url + account);
+            Pattern char_patter = Pattern.compile("<span class=\"characterName\">(.*)<\\/span>");
+            Pattern league_pattern = Pattern.compile("(.*)League                    </div>");
+            Matcher m = char_patter.matcher(profilePage);
+            Matcher m2 = league_pattern.matcher(profilePage);
+            m.find();
+            m2.find();
+            String temp = m.group(0);
+            String temp2 = m2.group(0);
 
-        if (!checkQuery) {
+            String charName = temp.substring(28).replace("</span>", "").trim();
+            String league = temp2.substring(24).replace("League                    </div>", "").trim();
+
+            this.characterName = charName;
+            this.league = league;
             qChar = true;
         }
     }

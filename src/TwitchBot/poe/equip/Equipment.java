@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static TwitchBot.jsonutil.JSONUtil.readJsonFromUrl;
+import static TwitchBot.jsonutil.WebUtil.readJsonFromUrl;
 
 public class Equipment {
 

@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import static TwitchBot.jsonutil.JSONUtil.readJsonFromUrl;
-import static TwitchBot.jsonutil.JSONUtil.readJsonFromUrlArray;
+import static TwitchBot.jsonutil.WebUtil.readJsonFromUrl;
+import static TwitchBot.jsonutil.WebUtil.readJsonFromUrlArray;
 
 public class BuildTree {
 

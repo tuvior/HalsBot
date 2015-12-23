@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static TwitchBot.jsonutil.JSONUtil.readJsonFromUrlArray;
+import static TwitchBot.jsonutil.WebUtil.readJsonFromUrlArray;
 
 public class Race {
 
