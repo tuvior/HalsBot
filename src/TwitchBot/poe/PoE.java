@@ -347,8 +347,4 @@ public class PoE {
             e.printStackTrace();
         }
     }
-
-    public static void main(String[] args) throws IOException {
-        updateLeagueAndCharacter("Hals", false);
-    }
 }
