@@ -195,7 +195,7 @@ public class PoE {
             bot.sendMessage(channel, characterName + " (Level " + level + ") in " + league + " is Rank " + rank + " Overall");
         } catch (JSONException e) {
             if (level > 0) {
-                bot.sendMessage(channel, characterName + " (Level " + level + " isn't ranked in " + league + " yet");
+                bot.sendMessage(channel, characterName + " (Level " + level + ") isn't ranked in " + league + " yet");
             } else {
                 bot.sendMessage(channel, characterName + " isn't ranked in " + league + " yet");
             }
