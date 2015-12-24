@@ -39,8 +39,6 @@ public class PoE {
     private String league;
     private POEDropList droplist;
 
-    private boolean qChar = false;
-
     private String characterName;
 
     public PoE(TwitchBot bot, String channel, String account) {
@@ -48,7 +46,6 @@ public class PoE {
         this.channel = channel;
         this.bot = bot;
         this.droplist = new POEDropList();
-
     }
 
     public void getProfilePage() {
@@ -78,13 +75,11 @@ public class PoE {
                         }
                     }
                 }
-                qChar = false;
             } catch (JSONException e) {
                 JSONObject character = readJsonFromUrl(exiletools_ladder_url + "&charName=" + account);
                 character = character.getJSONObject(character.keys().next());
                 league = character.getString("league");
                 characterName = account;
-                qChar = true;
             }
 
             if (league.equals("")) {
@@ -99,13 +94,13 @@ public class PoE {
 
             Pattern char_info_pattern = Pattern.compile("new C\\((.*)\\)");
             Matcher m = char_info_pattern.matcher(profilePage);
+
             m.find();
             String char_info_string = m.group(0).replace("new C(", "").replace(")", "");
             JSONObject char_info = new JSONObject(char_info_string);
 
             this.characterName = char_info.getString("name");
             this.league = char_info.getString("league");
-            qChar = true;
         }
     }
 
@@ -168,46 +163,30 @@ public class PoE {
             if (league.equals("")) {
                 bot.sendMessage(channel, "No alive character found");
             } else {
-                getRank(query);
+                getRank();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void getRank(String account) throws IOException {
+    public void getRank() throws IOException {
         Ladder ladder = Ladder.getLadderForLeague(league);
-        RankStatus rank;
-        if (qChar) {
-            rank = ladder.getRankForQuery(characterName, true);
-        } else {
-            rank = ladder.getRankForQuery(account, false);
-        }
-
+        RankStatus rank = ladder.getRankForQuery(characterName, true);
         if (rank.notFound) {
-            getCharacterRank(account);
+            getCharacterRank();
         } else {
             bot.sendMessage(channel, rank.name + " (Level " + rank.level + ") in " + league + " is Rank " + rank.rank + " Overall and Rank " + rank.classRank + " " + rank.charClass);
         }
 
     }
 
-    private void getCharacterRank(String account) throws IOException {
-        int rank;
-        int level;
-        if (qChar) {
-            JSONObject character = readJsonFromUrl(exiletools_ladder_url + "&charName=" + characterName);
-            character = character.getJSONObject(character.keys().next());
+    private void getCharacterRank() throws IOException {
+        JSONObject character = readJsonFromUrl(exiletools_ladder_url + "&charName=" + characterName);
+        character = character.getJSONObject(character.keys().next());
 
-            rank = Integer.parseInt(character.getString("rank"));
-            level = Integer.parseInt(character.getString("level"));
-        } else {
-            JSONObject characters = readJsonFromUrl(exiletools_ladder_url + "&accountName=" + account);
-            JSONObject character = characters.getJSONObject(account + "." + characterName);
-
-            rank = Integer.parseInt(character.getString("rank"));
-            level = Integer.parseInt(character.getString("level"));
-        }
+        int rank = Integer.parseInt(character.getString("rank"));
+        int level = Integer.parseInt(character.getString("level"));
 
         bot.sendMessage(channel, characterName + " (Level " + level + ") in " + league + " is Rank " + rank + " Overall");
     }
