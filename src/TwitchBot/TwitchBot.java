@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.TimeZone;
 
-import static TwitchBot.jsonutil.WebUtil.readJsonFromUrl;
+import static TwitchBot.webutil.WebUtil.readJsonFromUrl;
 
 public class TwitchBot extends PircBot {
 

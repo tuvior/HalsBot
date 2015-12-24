@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static TwitchBot.jsonutil.WebUtil.readJsonFromUrl;
+import static TwitchBot.webutil.WebUtil.readJsonFromUrl;
 
 public class Ladder {
 

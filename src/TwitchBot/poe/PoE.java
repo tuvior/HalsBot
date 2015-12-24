@@ -3,7 +3,7 @@ package TwitchBot.poe;
 import TwitchBot.TwitchBot;
 import TwitchBot.droplist.Drop;
 import TwitchBot.droplist.POEDropList;
-import TwitchBot.jsonutil.WebUtil;
+import TwitchBot.webutil.WebUtil;
 import TwitchBot.poe.equip.Equipment;
 import TwitchBot.poe.ladder.Ladder;
 import TwitchBot.poe.ladder.RankStatus;
@@ -24,7 +24,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static TwitchBot.jsonutil.WebUtil.readJsonFromUrl;
+import static TwitchBot.webutil.WebUtil.readJsonFromUrl;
 
 public class PoE {
 

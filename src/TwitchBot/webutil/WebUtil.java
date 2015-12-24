@@ -1,4 +1,4 @@
-package TwitchBot.jsonutil;
+package TwitchBot.webutil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
