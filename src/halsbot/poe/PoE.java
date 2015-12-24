@@ -36,10 +36,11 @@ public class PoE {
     private TwitchBot bot;
     private String account;
     private String channel;
-    private String league;
     private POEDropList droplist;
 
+    private String league;
     private String characterName;
+    private int level;
 
     public PoE(TwitchBot bot, String channel, String account) {
         this.account = account;
@@ -53,6 +54,7 @@ public class PoE {
     }
 
     private void updateLeagueAndCharacter(String account, boolean checkQuery) throws IOException {
+        level = 0;
         if (checkQuery) {
             String league = "";
             try {
@@ -101,6 +103,7 @@ public class PoE {
 
             this.characterName = char_info.getString("name");
             this.league = char_info.getString("league");
+            this.level = char_info.getInt("level");
         }
     }
 
@@ -191,7 +194,11 @@ public class PoE {
 
             bot.sendMessage(channel, characterName + " (Level " + level + ") in " + league + " is Rank " + rank + " Overall");
         } catch (JSONException e) {
-            bot.sendMessage(channel, characterName + " isn't ranked in " + league + " yet");
+            if (level > 0) {
+                bot.sendMessage(channel, characterName + " (Level " + level + " isn't ranked in " + league + " yet");
+            } else {
+                bot.sendMessage(channel, characterName + " isn't ranked in " + league + " yet");
+            }
         }
     }
 
