@@ -3,13 +3,13 @@ package halsbot.poe;
 import halsbot.TwitchBot;
 import halsbot.droplist.Drop;
 import halsbot.droplist.POEDropList;
-import halsbot.webutil.WebUtil;
 import halsbot.poe.equip.Equipment;
 import halsbot.poe.ladder.Ladder;
 import halsbot.poe.ladder.RankStatus;
 import halsbot.poe.race.NoRaceException;
 import halsbot.poe.race.Race;
 import halsbot.poe.race.RaceModifier;
+import halsbot.webutil.WebUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -182,13 +182,17 @@ public class PoE {
     }
 
     private void getCharacterRank() throws IOException {
-        JSONObject character = readJsonFromUrl(exiletools_ladder_url + "&charName=" + characterName);
-        character = character.getJSONObject(character.keys().next());
+        try {
+            JSONObject character = readJsonFromUrl(exiletools_ladder_url + "&charName=" + characterName);
+            character = character.getJSONObject(character.keys().next());
 
-        int rank = Integer.parseInt(character.getString("rank"));
-        int level = Integer.parseInt(character.getString("level"));
+            int rank = Integer.parseInt(character.getString("rank"));
+            int level = Integer.parseInt(character.getString("level"));
 
-        bot.sendMessage(channel, characterName + " (Level " + level + ") in " + league + " is Rank " + rank + " Overall");
+            bot.sendMessage(channel, characterName + " (Level " + level + ") in " + league + " is Rank " + rank + " Overall");
+        } catch (JSONException e) {
+            bot.sendMessage(channel, characterName + " isn't ranked in " + league + " yet");
+        }
     }
 
     public void getLadder() {
