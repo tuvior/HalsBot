@@ -95,21 +95,16 @@ public class PoE {
                 this.league = leagues.getJSONObject(league).getString("apiName");
             }
         } else {
-            String profilePage = WebUtil.readPage(profile_url + account);
-            Pattern char_patter = Pattern.compile("<span class=\"characterName\">(.*)<\\/span>");
-            Pattern league_pattern = Pattern.compile("(.*)League                    </div>");
-            Matcher m = char_patter.matcher(profilePage);
-            Matcher m2 = league_pattern.matcher(profilePage);
+            String profilePage = WebUtil.readPage(profile_url + account + "/characters");
+
+            Pattern char_info_pattern = Pattern.compile("new C\\((.*)\\)");
+            Matcher m = char_info_pattern.matcher(profilePage);
             m.find();
-            m2.find();
-            String temp = m.group(0);
-            String temp2 = m2.group(0);
+            String char_info_string = m.group(0).replace("new C(", "").replace(")", "");
+            JSONObject char_info = new JSONObject(char_info_string);
 
-            String charName = temp.substring(28).replace("</span>", "").trim();
-            String league = temp2.substring(24).replace("League                    </div>", "").trim();
-
-            this.characterName = charName;
-            this.league = league;
+            this.characterName = char_info.getString("name");
+            this.league = char_info.getString("league");
             qChar = true;
         }
     }
@@ -351,5 +346,9 @@ public class PoE {
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+        updateLeagueAndCharacter("Hals", false);
     }
 }
