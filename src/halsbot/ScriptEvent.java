@@ -2,9 +2,6 @@ package halsbot;
 
 import org.jibble.pircbot.User;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class ScriptEvent {
 
     private TwitchBot bot;
@@ -51,27 +48,6 @@ public class ScriptEvent {
 
     public User[] getUsers(String channel) {
         return bot.getUsers(channel);
-    }
-
-    public String[] getPingList(String channel) {
-        Set<String> result = new HashSet<>();
-
-        User[] us = bot.getUsers(channel);
-
-        String[] newl = new String[0];
-
-
-        for (User uss : us) {
-            System.out.println(uss.toString());
-            String nick = uss.toString();
-            if (nick.contains("%") || nick.contains("@") || nick.contains("+")) {
-                nick = nick.substring(1);
-            }
-            if (!bot.ignoredUsers.contains(nick)) {
-                result.add(nick);
-            }
-        }
-        return result.toArray(newl);
     }
 
     public String getNick() {

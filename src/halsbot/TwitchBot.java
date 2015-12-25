@@ -16,7 +16,6 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Set;
 import java.util.TimeZone;
 
 import static halsbot.webutil.WebUtil.readJsonFromUrl;
@@ -25,10 +24,9 @@ public class TwitchBot extends PircBot {
 
     private static final String now_playing_url = "http://sub.fm/now-playing.php";
 
-    public Set<String> ignoredUsers;
-    public String master;
-    public PoE poe;
-    public Realm realm;
+    private String master;
+    private PoE poe;
+    private Realm realm;
     private String oauth;
     private String twitchChannel;
     private ScriptManager scripts;
