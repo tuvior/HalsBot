@@ -309,11 +309,10 @@ public class TwitchBot extends PircBot {
     }
 
     private String getCurrentlyPlaying() {
-        try  {
+        try {
             InputStream is = new URL(now_playing_url).openStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String playing = rd.readLine();
-            return playing;
+            return rd.readLine();
         } catch (IOException ex) {
             ex.printStackTrace();
             return "";
