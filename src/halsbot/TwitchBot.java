@@ -141,15 +141,14 @@ public class TwitchBot extends PircBot {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
-            coffeeCounter.addCoffee();
+            coffeeCounter.addCoffee(1);
             sendMessage(channel, "Added a coffee");
         } else if (message.equalsIgnoreCase("!coffee++")) {
             if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
-            coffeeCounter.addCoffee();
-            coffeeCounter.addCoffee();
+            coffeeCounter.addCoffee(2);
             sendMessage(channel, "Added 2 coffees");
         } else if (message.equalsIgnoreCase("!coffee")) {
             sendMessage(channel, "Drank " + coffeeCounter.getCoffee() + " coffees.");

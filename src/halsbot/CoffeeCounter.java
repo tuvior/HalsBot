@@ -14,8 +14,8 @@ public class CoffeeCounter {
         return coffee;
     }
 
-    public void addCoffee() {
-        coffee++;
+    public void addCoffee(int amount) {
+        coffee = coffee + amount;
         writeToFile();
     }
 
