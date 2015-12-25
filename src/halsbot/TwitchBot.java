@@ -104,12 +104,9 @@ public class TwitchBot extends PircBot {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
-            if (!message.toLowerCase().contains("#")) {
-                sendMessage(channel, "Channel not recognized");
-                return;
-            }
-            String newChannel = message.substring(message.indexOf("#"));
-            sendMessage(channel, "Channel " + newChannel + " joined.");
+
+            String newChannel = "#" + message.substring(6).trim();
+            sendMessage(channel, "Trying to join " + newChannel + ".");
             joinChannel(newChannel);
         } else if (message.equalsIgnoreCase("!leave")) {
             if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
@@ -266,38 +263,6 @@ public class TwitchBot extends PircBot {
             userList.addUser(sender);
         }
         echo("Join in " + channel + " " + sender);
-    }
-
-    @Override
-    public void onPrivateMessage(String sender, String login, String hostname, String message) {
-        scripts.onPrivateMessage(sender, login, hostname, message);
-        echo("<- <" + sender + "> " + message);
-        if (message.contains("join")) {
-            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
-                this.sendMessage(sender, "User not authorized.");
-                return;
-            }
-            if (!message.contains("#")) {
-                this.sendMessage(sender, "Channel not recognized");
-                return;
-            }
-            String newChannel = message.substring(message.indexOf("#"));
-            this.sendMessage(sender, "Channel " + newChannel + " joined.");
-            this.joinChannel(newChannel);
-        } else if (message.toLowerCase().contains("msg")) {
-            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
-                this.sendMessage(sender, "User not authorized.");
-                return;
-            }
-            String[] com = message.split(" ");
-            if (com.length >= 3) {
-                String messag = "";
-                for (int i = 2; i < com.length; i++) {
-                    messag = messag + com[i] + " ";
-                }
-                this.sendMessage(com[1], messag);
-            }
-        }
     }
 
     @Override

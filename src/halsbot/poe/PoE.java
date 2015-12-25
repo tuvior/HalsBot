@@ -112,8 +112,15 @@ public class PoE {
     }
 
     public void track(String account) {
-        this.account = account;
-        bot.sendMessage(channel, "Now tracking " + account);
+        try {
+            readJsonFromUrl(exiletools_ladder_url + "&accountName=" + account);
+            this.account = account;
+            bot.sendMessage(channel, "Now tracking " + account);
+        } catch (JSONException e) {
+            bot.sendMessage(channel, "Account " + account + " not found.");
+        } catch (IOException e2) {
+            e2.printStackTrace();
+        }
     }
 
     public void addDrop(String name) {
