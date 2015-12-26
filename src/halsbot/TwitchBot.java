@@ -86,7 +86,8 @@ public class TwitchBot extends PircBot {
         }
 
         if (streambotCheck(message, sender)) {
-            sendMessage(channel, ".ban " + sender);
+            banUser(channel, sender);
+            echo("banned " + sender + " for streambot advertising");
             return;
         }
 
@@ -276,6 +277,55 @@ public class TwitchBot extends PircBot {
         echo(line);
     }
 
+    public void banUser(String user, String channel) {
+        sendMessage(channel, ".ban " + user);
+    }
+
+    public void unbanUser(String user, String channel) {
+        sendMessage(channel, ".unban " + user);
+    }
+
+    public void timeoutUser(String user, String channel) {
+        sendMessage(channel, ".timeout " + user);
+    }
+
+    public void timeoutUser(String user, String channel, long seconds) {
+        sendMessage(channel, ".timeout " + user + " " + seconds);
+    }
+
+    public void slowMode(String channel, long seconds) {
+        sendMessage(channel, ".slow " + seconds);
+    }
+
+    public void slowOff(String channel) {
+        sendMessage(channel, ".slowoff");
+    }
+
+    public void subscribersOn(String channel) {
+        sendMessage(channel, ".subscribers");
+    }
+
+    public void subscriversOff(String channel) {
+        sendMessage(channel, ".subscribersoff");
+    }
+
+    public Date getStreamStart() {
+        try {
+            JSONObject t_stream = readJsonFromUrl("https://api.twitch.tv/kraken/streams/" + twitchChannel);
+            if (t_stream.has("stream")) {
+                String start = t_stream.getJSONObject("stream").getString("created_at");
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.GERMAN);
+                format.setTimeZone(TimeZone.getTimeZone("GMT"));
+                return format.parse(start);
+            } else {
+                return null;
+            }
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void log(String channel, String nick, String message)
             throws IOException {
         File folder = new File("logs/");
@@ -328,23 +378,6 @@ public class TwitchBot extends PircBot {
             ex.printStackTrace();
             return "";
         }
-    }
-
-    private Date getStreamStart() {
-        try {
-            JSONObject t_stream = readJsonFromUrl("https://api.twitch.tv/kraken/streams/" + twitchChannel);
-            if (t_stream.has("stream")) {
-                String start = t_stream.getJSONObject("stream").getString("created_at");
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.GERMAN);
-                format.setTimeZone(TimeZone.getTimeZone("GMT"));
-                return format.parse(start);
-            } else {
-                return null;
-            }
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     private String getUptime() {
