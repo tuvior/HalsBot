@@ -85,6 +85,11 @@ public class TwitchBot extends PircBot {
             return;
         }
 
+        if (streambotCheck(message, sender)) {
+            sendMessage(channel, ".ban " + sender);
+            return;
+        }
+
         scripts.onMessage(channel, sender, login, hostname, message);
         try {
             log(channel, sender, message);
@@ -308,6 +313,10 @@ public class TwitchBot extends PircBot {
         }
 
         return "";
+    }
+
+    private boolean streambotCheck(String message, String sender) {
+        return message.toLowerCase().contains("streambot") && userList.getMessages(sender) <= 1;
     }
 
     private String getCurrentlyPlaying() {

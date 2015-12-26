@@ -54,6 +54,14 @@ public class UserList {
         }
     }
 
+    public int getMessages(String name) {
+        if (users.containsKey(name)) {
+            return users.get(name).getMessages();
+        } else {
+            return 0;
+        }
+    }
+
     public void updateUser(String name) {
         if (users.containsKey(name)) {
             User temp = users.get(name);

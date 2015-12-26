@@ -10,6 +10,10 @@ public class User {
         this.messages = messages;
     }
 
+    public int getMessages() {
+        return messages;
+    }
+
     public void addMessage() {
         messages++;
     }
