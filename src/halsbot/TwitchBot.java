@@ -13,9 +13,11 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import static halsbot.webutil.WebUtil.readJsonFromUrl;
@@ -152,6 +154,8 @@ public class TwitchBot extends PircBot {
             sendMessage(channel, "Drank " + coffeeCounter.getCoffee() + " coffees.");
         } else if (message.equalsIgnoreCase("!music")) {
             sendMessage(channel, getCurrentlyPlaying());
+        } else if (message.equalsIgnoreCase("!uptime")) {
+            sendMessage(channel, getUptime());
         }
 
         // PoE Commands
@@ -314,6 +318,44 @@ public class TwitchBot extends PircBot {
         } catch (IOException ex) {
             ex.printStackTrace();
             return "";
+        }
+    }
+
+    private Date getStreamStart() {
+        try {
+            JSONObject t_stream = readJsonFromUrl("https://api.twitch.tv/kraken/streams/" + twitchChannel);
+            if (t_stream.has("stream")) {
+                String start = t_stream.getJSONObject("stream").getString("created_at");
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.GERMAN);
+                format.setTimeZone(TimeZone.getTimeZone("GMT"));
+                return format.parse(start);
+            } else {
+                return null;
+            }
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String getUptime() {
+        Date start_date = getStreamStart();
+        if (start_date != null) {
+            long diffInSeconds = (new Date().getTime() - start_date.getTime()) / 1000;
+
+            long diff[] = new long[]{0, 0, 0, 0};
+            diff[3] = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
+            diff[2] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
+            diff[1] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
+            diff[0] = (diffInSeconds / 24);
+
+            if (diff[0] > 0) {
+                return "Stream has been up for " + diff[0] + " days " + diff[1] + " hours and " + diff[2] + "minutes.";
+            } else {
+                return "Stream has been up for " + diff[1] + " hours and " + diff[2] + " minutes";
+            }
+        } else {
+            return "Stream is offline.";
         }
     }
 
