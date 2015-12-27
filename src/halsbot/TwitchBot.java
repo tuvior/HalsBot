@@ -89,11 +89,7 @@ public class TwitchBot extends PircBot {
         }
 
         scripts.onMessage(channel, sender, login, hostname, message);
-        try {
-            log(channel, sender, message);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+        log(channel, sender, message);
 
         // Basic commands
         if (message.equalsIgnoreCase("!quit")) {
@@ -325,25 +321,21 @@ public class TwitchBot extends PircBot {
         return null;
     }
 
-    public void log(String channel, String nick, String message)
-            throws IOException {
-        File folder = new File("logs/");
-        if (!folder.isDirectory()) {
-            folder.mkdir();
+    public void log(String channel, String nick, String message) {
+        try {
+            File folder = new File("logs/");
+            if (!folder.isDirectory()) {
+                folder.mkdir();
+            }
+            File tempFile = new File("logs/" + channel + ".txt");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile, true));
+            String timeStamp = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(Calendar.getInstance().getTime());
+            String log = timeStamp + " <" + nick + "> " + message;
+            writer.write(log + System.getProperty("line.separator"));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        File tempFile = new File("logs/" + channel + ".txt");
-
-        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile,
-                true));
-
-        String timeStamp = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss")
-                .format(Calendar.getInstance().getTime());
-
-        String log = timeStamp + " <" + nick + "> " + message;
-
-        writer.write(log + System.getProperty("line.separator"));
-
-        writer.close();
 
     }
 
