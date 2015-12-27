@@ -24,7 +24,7 @@ public class POEDropList {
         int i = -3;
         for (Drop drop : drops) {
             i = i + drop.toString().length() + 3;
-            if (i > 1000) break;
+            if (i > 490) break;
 
             dropss = dropss + " | " + drop.toString();
         }
