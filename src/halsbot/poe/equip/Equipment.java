@@ -55,9 +55,4 @@ public class Equipment {
 
         return result.substring(3);
     }
-
-    public static void main(String[] args) throws IOException {
-        Equipment xd = loadFromJSon("HalsCrispy", "Hals");
-        System.out.println(xd.getCurses());
-    }
 }
