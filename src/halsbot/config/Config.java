@@ -3,16 +3,19 @@ package halsbot.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 public class Config {
 
     public String name;
     public String oauth;
-    public String master;
     public String poeAccount;
     public String realmeye;
     public String twitch;
+    public Set<String> mods;
 
     public Config() {
         try {
@@ -33,9 +36,12 @@ public class Config {
 
         name = config.getProperty("name");
         oauth = config.getProperty("oauth");
-        master = config.getProperty("master");
         poeAccount = config.getProperty("PoEAccount");
         realmeye = config.getProperty("realmeye");
         twitch = config.getProperty("twitchChannel");
+
+        String mod_list [] = config.getProperty("mods").toLowerCase().split(",");
+        mods = new HashSet<>(Arrays.asList(mod_list));
+
     }
 }

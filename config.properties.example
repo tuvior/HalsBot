@@ -1,7 +1,21 @@
-#HalsBot Configuration File
-PoEAccount=
-oauth=
+############################
+#HalsBot Configuration File#
+############################
+
+# name of the bot
 name=
-realmeye=
+
+# twitch oauth for the bot
+oauth=
+
+# twitch channel the bot should join
 twitchChannel=
-master=
+
+#the path of exile account to be tracked
+PoEAccount=
+
+# realmeye link for the account
+realmeye=
+
+# mods that can control the bot, comma separated (example,example2,example3)
+mods=

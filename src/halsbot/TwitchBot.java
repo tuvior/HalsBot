@@ -15,10 +15,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 
 import static halsbot.webutil.WebUtil.readJsonFromUrl;
 
@@ -26,7 +23,6 @@ public class TwitchBot extends PircBot {
 
     private static final String now_playing_url = "http://sub.fm/now-playing.php";
 
-    private String master;
     private PoE poe;
     private Realm realm;
     private String oauth;
@@ -35,6 +31,7 @@ public class TwitchBot extends PircBot {
     private boolean title = true;
     private UserList userList;
     private CoffeeCounter coffeeCounter;
+    private Set<String> mods;
 
     public TwitchBot() throws IOException {
         Config config = new Config();
@@ -47,7 +44,7 @@ public class TwitchBot extends PircBot {
         realm = new Realm(this, "#" + config.twitch, config.realmeye);
         coffeeCounter = new CoffeeCounter();
 
-        this.master = config.master;
+        this.mods = config.mods;
         this.oauth = config.oauth;
         this.twitchChannel = config.twitch;
         userList = new UserList("viewers.csv");
@@ -76,7 +73,7 @@ public class TwitchBot extends PircBot {
         echo("<" + sender + "> " + message);
         userList.updateUser(sender);
         if (message.toLowerCase().equals("!reload")) {
-            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
+            if (!isMod(sender)) {
                 this.sendMessage(channel, "User not authorized.");
                 return;
             }
@@ -100,13 +97,13 @@ public class TwitchBot extends PircBot {
 
         // Basic commands
         if (message.equalsIgnoreCase("!quit")) {
-            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
+            if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
             this.quitServer("Goodbye");
         } else if (message.toLowerCase().startsWith("!join")) {
-            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
+            if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
@@ -115,13 +112,13 @@ public class TwitchBot extends PircBot {
             sendMessage(channel, "Trying to join " + newChannel + ".");
             joinChannel(newChannel);
         } else if (message.equalsIgnoreCase("!leave")) {
-            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
+            if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
             this.partChannel(channel, "Bye.");
         } else if (message.toLowerCase().startsWith("!titlemode")) {
-            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
+            if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
@@ -143,14 +140,14 @@ public class TwitchBot extends PircBot {
         } else if (message.equalsIgnoreCase("!about")) {
             sendMessage(channel, "HalsBot by Tuvior, https://github.com/tuvior/HalsBot");
         } else if (message.equalsIgnoreCase("!coffee+")) {
-            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
+            if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
             coffeeCounter.addCoffee(1);
             sendMessage(channel, "Added a coffee");
         } else if (message.equalsIgnoreCase("!coffee++")) {
-            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
+            if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
@@ -178,7 +175,7 @@ public class TwitchBot extends PircBot {
             String target = message.substring(10);
             poe.getRaceRank(target);
         } else if (message.toLowerCase().startsWith("!track")) {
-            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
+            if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
@@ -217,7 +214,7 @@ public class TwitchBot extends PircBot {
 
         //Realm Commands
         else if (message.toLowerCase().startsWith("!setrealm")) {
-            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
+            if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
@@ -246,7 +243,7 @@ public class TwitchBot extends PircBot {
             }
 
         } else if (message.toLowerCase().startsWith("!adddrop")) {
-            if (!sender.equalsIgnoreCase(master) && !sender.equalsIgnoreCase("tuvior")) {
+            if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
@@ -348,6 +345,10 @@ public class TwitchBot extends PircBot {
 
         writer.close();
 
+    }
+
+    private boolean isMod(String user) {
+        return mods.contains(user.toLowerCase());
     }
 
     private String getCurrentGame() {
