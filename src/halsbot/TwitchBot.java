@@ -72,12 +72,12 @@ public class TwitchBot extends PircBot {
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
         echo("<" + sender + "> " + message);
         userList.updateUser(sender);
-        if (message.toLowerCase().equals("!reload")) {
+        if (isCommand(message, "!reload")) {
             if (!isMod(sender)) {
-                this.sendMessage(channel, "User not authorized.");
+                sendMessage(channel, "User not authorized.");
                 return;
             }
-            this.sendMessage(channel, "Scripts reloaded.");
+            sendMessage(channel, "Scripts reloaded.");
             scripts.reinit();
             return;
         }
@@ -92,13 +92,13 @@ public class TwitchBot extends PircBot {
         log(channel, sender, message);
 
         // Basic commands
-        if (message.equalsIgnoreCase("!quit")) {
+        if (isCommand(message, "!quit")) {
             if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
-            this.quitServer("Goodbye");
-        } else if (message.toLowerCase().startsWith("!join")) {
+            quitServer("Goodbye");
+        } else if (isCommandWithParams(message, "!join")) {
             if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
@@ -107,13 +107,13 @@ public class TwitchBot extends PircBot {
             String newChannel = "#" + message.substring(6).trim();
             sendMessage(channel, "Trying to join " + newChannel + ".");
             joinChannel(newChannel);
-        } else if (message.equalsIgnoreCase("!leave")) {
+        } else if (isCommand(message, "!leave")) {
             if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
-            this.partChannel(channel, "Bye.");
-        } else if (message.toLowerCase().startsWith("!titlemode")) {
+            partChannel(channel, "Bye.");
+        } else if (isCommandWithParams(message, "!titlemode")) {
             if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
@@ -133,44 +133,44 @@ public class TwitchBot extends PircBot {
             } else {
                 sendMessage(channel, "Invalid parameters.");
             }
-        } else if (message.equalsIgnoreCase("!about")) {
+        } else if (isCommand(message, "!about")) {
             sendMessage(channel, "HalsBot by Tuvior, https://github.com/tuvior/HalsBot");
-        } else if (message.equalsIgnoreCase("!coffee+")) {
+        } else if (isCommand(message, "!coffee+")) {
             if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
             coffeeCounter.addCoffee(1);
             sendMessage(channel, "Added a coffee");
-        } else if (message.equalsIgnoreCase("!coffee++")) {
+        } else if (isCommand(message, "!coffee++")) {
             if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
             coffeeCounter.addCoffee(2);
             sendMessage(channel, "Added 2 coffees");
-        } else if (message.equalsIgnoreCase("!coffee")) {
+        } else if (isCommand(message, "!coffee")) {
             sendMessage(channel, "Drank " + coffeeCounter.getCoffee() + " coffees.");
-        } else if (message.equalsIgnoreCase("!music")) {
+        } else if (isCommand(message, "!music")) {
             sendMessage(channel, getCurrentlyPlaying());
-        } else if (message.equalsIgnoreCase("!uptime")) {
+        } else if (isCommand(message, "!uptime")) {
             sendMessage(channel, getUptime());
         }
 
         // PoE Commands
-        else if (message.equalsIgnoreCase("!rank")) {
+        else if (isCommand(message, "!rank")) {
             poe.rank();
-        } else if (message.equalsIgnoreCase("!racerank")) {
+        } else if (isCommand(message, "!racerank")) {
             poe.getRaceRank();
-        } else if (message.toLowerCase().startsWith("!rank")) {
+        } else if (isCommandWithParams(message, "!rank")) {
             String target = message.substring(6);
             poe.rank(target, true);
-        } else if (message.toLowerCase().startsWith("!racetime")) {
+        } else if (isCommand(message, "!racetime")) {
             poe.raceTimeLeft();
-        } else if (message.toLowerCase().startsWith("!racerank")) {
+        } else if (isCommandWithParams(message, "!racerank")) {
             String target = message.substring(10);
             poe.getRaceRank(target);
-        } else if (message.toLowerCase().startsWith("!track")) {
+        } else if (isCommandWithParams(message, "!track")) {
             if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
@@ -182,23 +182,23 @@ public class TwitchBot extends PircBot {
             }
 
             poe.track(command[1]);
-        } else if (message.equalsIgnoreCase("!ladder")) {
+        } else if (isCommand(message, "!ladder")) {
             poe.getLadder();
-        } else if (message.equalsIgnoreCase("!racemods")) {
+        } else if (isCommand(message, "!racemods")) {
             poe.getRaceMods();
-        } else if (message.equalsIgnoreCase("!raceladder")) {
+        } else if (isCommand(message, "!raceladder")) {
             poe.getRaceLadder();
-        } else if (message.equalsIgnoreCase("!profile")) {
+        } else if (isCommand(message, "!profile")) {
             poe.getProfilePage();
-        } else if (message.equalsIgnoreCase("!filter")) {
+        } else if (isCommand(message, "!filter")) {
             poe.lootfilter();
-        } else if (message.equalsIgnoreCase("!tree")) {
+        } else if (isCommand(message, "!tree")) {
             poe.getSkillTree();
-        } else if (message.equalsIgnoreCase("!gems")) {
+        } else if (isCommand(message, "!gems")) {
             poe.getGems();
-        } else if (message.equalsIgnoreCase("!curses")) {
+        } else if (isCommand(message, "!curses")) {
             poe.getCurses();
-        } else if (message.equalsIgnoreCase("!commands")) {
+        } else if (isCommand(message, "!commands")) {
             if (getCurrentGame().equals("Realm of the Mad God")) {
                 String commands = "!server, !realmeye, !drops, !uptime, !coffee, !music, !about";
                 sendMessage(channel, commands);
@@ -209,7 +209,7 @@ public class TwitchBot extends PircBot {
         }
 
         //Realm Commands
-        else if (message.toLowerCase().startsWith("!setrealm")) {
+        else if (isCommandWithParams(message, "!setrealm")) {
             if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
@@ -218,27 +218,27 @@ public class TwitchBot extends PircBot {
             if (!realm_.equals("")) {
                 realm.setRealm(realm_);
             }
-        } else if (message.equalsIgnoreCase("!realm")) {
+        } else if (isCommand(message, "!realm")) {
             realm.getRealm();
-        } else if (message.equalsIgnoreCase("!server")) {
+        } else if (isCommand(message, "!server")) {
             realm.getServer();
-        } else if (message.equalsIgnoreCase("!realmeye")) {
+        } else if (isCommand(message, "!realmeye")) {
             realm.getRealmeye();
-        } else if (message.equalsIgnoreCase("!drops")) {
+        } else if (isCommand(message, "!drops")) {
             if (getCurrentGame().equals("Realm of the Mad God")) {
                 realm.getDrops();
             } else {
                 poe.getDrops();
             }
 
-        } else if (message.equalsIgnoreCase("!removedrop")) {
+        } else if (isCommand(message, "!removedrop")) {
             if (getCurrentGame().equals("Realm of the Mad God")) {
                 realm.removeDrop();
             } else {
                 poe.removeDrop();
             }
 
-        } else if (message.toLowerCase().startsWith("!adddrop")) {
+        } else if (isCommandWithParams(message, "!adddrop")) {
             if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
                 return;
@@ -358,6 +358,14 @@ public class TwitchBot extends PircBot {
         }
 
         return "";
+    }
+
+    private boolean isCommand(String text, String command) {
+        return text.equalsIgnoreCase(command);
+    }
+
+    private boolean isCommandWithParams(String text, String command) {
+        return text.toLowerCase().startsWith(command);
     }
 
     private boolean streambotCheck(String message, String sender) {
