@@ -23,32 +23,24 @@ public class Ladder {
         this.entries = new ArrayList<>(entries);
     }
 
-    private static Ladder fromJson(JSONObject obj1, JSONObject obj2) {
-        int total = obj1.getInt("total");
+    private static Ladder fromJson(JSONObject obj) {
+        int total = obj.getInt("total");
         ArrayList<LadderEntry> entries = new ArrayList<>();
 
 
-        JSONArray ent = obj1.getJSONArray("entries");
+        JSONArray ent = obj.getJSONArray("entries");
         for (int i = 0; i < (total < 200 ? total : 200); i++) {
             LadderEntry entry = LadderEntry.fromJson(ent.getJSONObject(i));
             entries.add(entry);
         }
 
-        total = obj2.getInt("total");
-        ent = obj2.getJSONArray("entries");
-        for (int i = 0; i < (total < 200 ? total : 200); i++) {
-            LadderEntry entry = LadderEntry.fromJson(ent.getJSONObject(i));
-            entries.add(entry);
-        }
-
-        return new Ladder(obj1.getInt("total"), entries);
+        return new Ladder(obj.getInt("total"), entries);
     }
 
     public static Ladder getLadderForLeague(String leagueName) throws IOException {
         JSONObject ladder = readJsonFromUrl(ladder_json_url.replace("LEAGUE", URLEncoder.encode(leagueName, "UTF-8")));
-        JSONObject ladder2 = readJsonFromUrl(ladder_json_url.replace("LEAGUE", URLEncoder.encode(leagueName, "UTF-8")) + "&offset=200");
 
-        return fromJson(ladder, ladder2);
+        return fromJson(ladder);
     }
 
     public int getTotal() {
