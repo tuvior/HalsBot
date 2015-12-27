@@ -32,15 +32,32 @@ public class Equipment {
         return new Equipment(equipl);
     }
 
+    public String getCurses() {
+        String result = "";
+        for (Equip equip : equips) {
+            String curses = equip.getCurses();
+            if (!curses.isEmpty()) {
+                result = result + " | " + curses;
+            }
+        }
+
+        return result.substring(3);
+    }
+
     @Override
     public String toString() {
         String result = "";
         for (Equip equip : equips) {
-            if (!equip.toString().equals("")) {
+            if (!equip.toString().isEmpty()) {
                 result = result + " | " + equip.toString();
             }
         }
 
         return result.substring(3);
+    }
+
+    public static void main(String[] args) throws IOException {
+        Equipment xd = loadFromJSon("HalsCrispy", "Hals");
+        System.out.println(xd.getCurses());
     }
 }

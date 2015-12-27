@@ -35,7 +35,7 @@ public class Equip {
         for (Object object : gems) {
             JSONObject gem = (JSONObject) object;
             int group = socketToGroup[gem.getInt("socket")];
-            builder.get(group).add(new Gem(gem.getString("typeLine"), group));
+            builder.get(group).add(new Gem(gem.getString("typeLine"), group, gem.getJSONArray("properties").getJSONObject(0).getString("name")));
         }
 
         return new Equip(obj.getString("typeLine"), builder);
@@ -43,6 +43,37 @@ public class Equip {
 
     public String getName() {
         return name;
+    }
+
+    public String getCurses() {
+        if (gems.isEmpty()) {
+            return "";
+        }
+        String result = "";
+
+        for (ArrayList<Gem> gemGroup : gems.values()) {
+            String group = "";
+            if (gemGroup.size() > 0) {
+                for (Gem gem : gemGroup) {
+                    if (gem.getName().equals("Curse On Hit")) {
+                        for (Gem gem_ : gemGroup) {
+                            if (gem_.isCurse()) {
+                                group = group + " + " + gem_;
+                            }
+                        }
+                        if (!group.isEmpty()) {
+                            group = group.substring(3);
+                            result = result + " | " + group;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        if (result.contains("|")) {
+            result = result.substring(3);
+        }
+        return result;
     }
 
     @Override

@@ -154,6 +154,16 @@ public class PoE {
         }
     }
 
+    public void getCurses() {
+        try {
+            updateLeagueAndCharacter(account, false);
+            Equipment equip = Equipment.loadFromJSon(characterName, account);
+            bot.sendMessage(channel, equip.getCurses());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void getDrops() {
         bot.sendMessage(channel, droplist.getDrops());
     }
