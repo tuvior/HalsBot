@@ -21,12 +21,12 @@ public class POEDropList {
 
     public String getDrops() {
         String dropss = "";
-        int i = 0;
+        int i = -3;
         for (Drop drop : drops) {
-            if (i > 10) break;
+            i = i + drop.toString().length() + 3;
+            if (i > 1000) break;
 
             dropss = dropss + " | " + drop.toString();
-            i++;
         }
 
         if (dropss.contains("|")) {
