@@ -393,8 +393,12 @@ public class TwitchBot extends PircBot {
 
             if (diff[0] > 0) {
                 return "Stream has been up for " + diff[0] + " days " + diff[1] + " hours and " + diff[2] + "minutes.";
-            } else {
+            } else if (diff[1] > 0) {
                 return "Stream has been up for " + diff[1] + " hours and " + diff[2] + " minutes";
+            } else if (diff[2] > 0) {
+                return "Stream has been up for " + diff[2] + " minutes";
+            } else {
+                return "Stream just went online!";
             }
         } else {
             return "Stream is offline.";
