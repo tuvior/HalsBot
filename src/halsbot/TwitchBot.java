@@ -163,7 +163,11 @@ public class TwitchBot extends PircBot {
                 sendMessage(channel, "User not authorized.");
                 return;
             }
-            updateStream(message.substring(7));
+            if (updateStream(message.substring(7))) {
+                sendMessage(channel, "Title updated");
+            } else {
+                sendMessage(channel, "Error");
+            }
         }
 
         // PoE Commands
@@ -409,7 +413,7 @@ public class TwitchBot extends PircBot {
         }
     }
 
-    public void updateStream(String title) {
+    public boolean updateStream(String title) {
         try {
             URL url = new URL("https://api.twitch.tv/kraken/channels/" + twitchChannel);
             HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
@@ -429,13 +433,15 @@ public class TwitchBot extends PircBot {
 
             if (httpCon.getResponseCode() == 200) {
                 httpCon.getInputStream();
+                return true;
             } else {
-
                 httpCon.getErrorStream();
+                return false;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public String getStatus() {
