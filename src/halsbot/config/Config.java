@@ -15,6 +15,7 @@ public class Config {
     public String poeAccount;
     public String realmeye;
     public String twitch;
+    public String editorOauth;
     public Set<String> mods;
 
     public Config() {
@@ -39,6 +40,7 @@ public class Config {
         poeAccount = config.getProperty("PoEAccount");
         realmeye = config.getProperty("realmeye");
         twitch = config.getProperty("twitchChannel");
+        editorOauth = config.getProperty("editoroauth");
 
         String mod_list [] = config.getProperty("mods").toLowerCase().split(",");
         mods = new HashSet<>(Arrays.asList(mod_list));

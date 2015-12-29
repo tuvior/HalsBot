@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.ParseException;
@@ -32,6 +33,7 @@ public class TwitchBot extends PircBot {
     private UserList userList;
     private CoffeeCounter coffeeCounter;
     private Set<String> mods;
+    private String editorOAuth;
 
     public TwitchBot() throws IOException {
         Config config = new Config();
@@ -43,10 +45,10 @@ public class TwitchBot extends PircBot {
         poe = new PoE(this, "#" + config.twitch, config.poeAccount);
         realm = new Realm(this, "#" + config.twitch, config.realmeye);
         coffeeCounter = new CoffeeCounter();
-
-        this.mods = config.mods;
-        this.oauth = config.oauth;
-        this.twitchChannel = config.twitch;
+        mods = config.mods;
+        oauth = config.oauth;
+        twitchChannel = config.twitch;
+        editorOAuth = config.editorOauth;
         userList = new UserList("viewers.csv");
     }
 
@@ -155,6 +157,12 @@ public class TwitchBot extends PircBot {
             sendMessage(channel, getCurrentlyPlaying());
         } else if (isCommand(message, "!uptime")) {
             sendMessage(channel, getUptime());
+        } else if (isCommandWithParams(message, "!title")) {
+            if (!isMod(sender)) {
+                sendMessage(channel, "User not authorized.");
+                return;
+            }
+            updateStream(message.substring(7));
         }
 
         // PoE Commands
@@ -383,6 +391,52 @@ public class TwitchBot extends PircBot {
         }
     }
 
+    public void updateStream(String title) {
+        try {
+            URL url = new URL("https://api.twitch.tv/kraken/channels/" + twitchChannel);
+            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+            httpCon.setRequestProperty("Authorization", "OAuth " + editorOAuth);
+            httpCon.setRequestProperty("content-type", "application/json");
+            httpCon.setRequestMethod("PUT");
+            JSONObject channel = new JSONObject();
+            JSONObject update = new JSONObject();
+            channel.put("status", title);
+            update.put("channel", channel);
+            httpCon.setDoOutput(true);
+
+            DataOutputStream wr = new DataOutputStream(httpCon.getOutputStream());
+            wr.writeBytes(update.toString());
+            wr.flush();
+            wr.close();
+
+            if (httpCon.getResponseCode() == 200) {
+                httpCon.getInputStream();
+            } else {
+
+                httpCon.getErrorStream();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getStatus() {
+        try {
+            JSONObject t_channel = readJsonFromUrl("https://api.twitch.tv/kraken/channels/" + twitchChannel);
+            String status;
+            try {
+                status = t_channel.getString("status");
+            } catch (JSONException e) {
+                status = "";
+            }
+            return status;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
     private String getUptime() {
         Date start_date = getStreamStart();
         if (start_date != null) {
@@ -411,5 +465,4 @@ public class TwitchBot extends PircBot {
     public void echo(String message) {
         System.out.println("[" + getName() + "]: " + getTimeStamp() + ": " + message);
     }
-
 }

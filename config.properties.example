@@ -19,3 +19,6 @@ realmeye=
 
 # mods that can control the bot, comma separated (example,example2,example3)
 mods=
+
+# editor oauth token for title change
+editoroauth=
