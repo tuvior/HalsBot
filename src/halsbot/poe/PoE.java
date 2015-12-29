@@ -168,6 +168,24 @@ public class PoE {
         bot.sendMessage(channel, droplist.getDrops());
     }
 
+    public void updateTitleTags() {
+        try {
+            String title = bot.getStatus();
+            updateLeagueAndCharacter(account, false);
+            Ladder ladder = Ladder.getLadderForLeague(league);
+            RankStatus rank = ladder.getRankForQuery(characterName, true);
+            if (!rank.notFound) {
+                title = title.replaceAll("\\[Rank [0-9]+\\]", "[Rank " + rank.rank + "]");
+                title = title.replaceAll("lvl[0-9]+", "lvl" + rank.level);
+            } else {
+                title = title.replaceAll("lvl[0-9]+", "lvl" + level);
+            }
+            bot.updateStream(title);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void rank() {
         if (account == null) {
             bot.sendMessage(channel, "No character being tracked at this time");

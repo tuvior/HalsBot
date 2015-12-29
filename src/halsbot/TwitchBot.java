@@ -63,6 +63,7 @@ public class TwitchBot extends PircBot {
             connect("irc.twitch.tv", 6667, oauth);
             joinChannel("#" + twitchChannel);
             sendRawLine("CAP REQ :twitch.tv/membership");
+            titleUpdateThread();
         } catch (NickAlreadyInUseException n) {
             System.err.println("This should never happen");
         } catch (Exception e) {
@@ -278,6 +279,23 @@ public class TwitchBot extends PircBot {
     @Override
     protected void onUnknown(String line) {
         echo(line);
+    }
+
+    public void titleUpdateThread() {
+        new Thread() {
+            public void run() {
+                while(true) {
+                    if (getCurrentGame().equals("Path of Exile")) {
+                        poe.updateTitleTags();
+                    }
+                    try {
+                        Thread.sleep(300000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
     }
 
     public void banUser(String user, String channel) {
