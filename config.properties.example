@@ -11,7 +11,7 @@ oauth=
 # twitch channel the bot should join
 twitchChannel=
 
-#the path of exile account to be tracked
+# the path of exile account to be tracked
 PoEAccount=
 
 # realmeye link for the account

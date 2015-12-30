@@ -182,17 +182,37 @@ public class PoE {
 
     public void updateTitleTags() {
         try {
+            boolean update = false;
             String title = bot.getStatus();
             updateLeagueAndCharacter(account, false);
             Ladder ladder = Ladder.getLadderForLeague(league);
             RankStatus rank = ladder.getRankForQuery(characterName, true);
-            if (!rank.notFound) {
-                title = title.replaceAll("Rank [0-9]+", "Rank " + rank.rank);
-                title = title.replaceAll("lvl[0-9]+", "lvl" + rank.level);
-            } else {
-                title = title.replaceAll("lvl[0-9]+", "lvl" + level);
+            if (title.toLowerCase().contains("hals challenge")) {
+                if (!title.contains("/7")) {
+                    title = title.replaceAll("[H|h]als [C|c]hallenge", "Hals Challenge 0/7");
+                }
+                int challenge = halsChallengeCount();
+                title = title.replace("[H|h]als [C|c]hallenge [0-9]\\/7", "Hals Challenge " + challenge + "/7");
+                update = true;
             }
-            bot.updateStream(title);
+            if (!rank.notFound) {
+                if (title.contains("Rank")) {
+                    title = title.replaceAll("Rank [0-9]+", "Rank " + rank.rank);
+                    update = true;
+                }
+                if (title.contains("lvl")) {
+                    title = title.replaceAll("lvl[0-9]+", "lvl" + rank.level);
+                    update = true;
+                }
+            } else {
+                if (title.contains("lvl")) {
+                    title = title.replaceAll("lvl[0-9]+", "lvl" + level);
+                    update = true;
+                }
+            }
+            if (update) {
+                bot.updateStream(title);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -223,7 +243,30 @@ public class PoE {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public int halsChallengeCount() {
+        try {
+            int amount = 0;
+            JSONArray characters = readJsonFromUrlArray("https://www.pathofexile.com/character-window/get-characters?accountName=" + account);
+            for (Character.Class class_ : Character.Class.values()) {
+                int maxLevel = 0;
+                for (int i = 0; i < characters.length(); i++) {
+                    JSONObject character = characters.getJSONObject(i);
+                    if (character.getString("league").equals("Hardcore Talisman") && character.getString("class").equals(class_.toString()) && character.getInt("level") > maxLevel) {
+                        maxLevel = character.getInt("level");
+                    }
+                }
+                if (maxLevel >= 90) {
+                    amount++;
+                }
+            }
+
+            return amount;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public void rank() {

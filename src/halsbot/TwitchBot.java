@@ -296,7 +296,7 @@ public class TwitchBot extends PircBot {
         new Thread() {
             public void run() {
                 while(true) {
-                    if (getCurrentGame().equals("Path of Exile")) {
+                    if (getStreamStart() != null && getCurrentGame().equals("Path of Exile")) {
                         poe.updateTitleTags();
                     }
                     try {
@@ -344,7 +344,7 @@ public class TwitchBot extends PircBot {
     public Date getStreamStart() {
         try {
             JSONObject t_stream = readJsonFromUrl("https://api.twitch.tv/kraken/streams/" + twitchChannel);
-            if (t_stream.has("stream")) {
+            if (!t_stream.isNull("stream")) {
                 String start = t_stream.getJSONObject("stream").getString("created_at");
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.GERMAN);
                 format.setTimeZone(TimeZone.getTimeZone("GMT"));
