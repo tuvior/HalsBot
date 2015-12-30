@@ -10,6 +10,7 @@ import halsbot.poe.ladder.RankStatus;
 import halsbot.poe.race.NoRaceException;
 import halsbot.poe.race.Race;
 import halsbot.poe.race.RaceModifier;
+import halsbot.poe.rip.RipList;
 import halsbot.webutil.WebUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +38,7 @@ public class PoE {
     private String account;
     private String channel;
     private POEDropList droplist;
+    private RipList rips;
 
     private String league;
     private String characterName;
@@ -47,6 +49,7 @@ public class PoE {
         this.channel = channel;
         this.bot = bot;
         this.droplist = new POEDropList();
+        this.rips = new RipList();
     }
 
     public void getProfilePage() {
@@ -105,6 +108,15 @@ public class PoE {
             this.league = char_info.getString("league");
             this.level = char_info.getInt("level");
         }
+    }
+
+    public void getRips() {
+        bot.sendMessage(channel, "Latest RIPs: " + rips.getRips());
+    }
+
+    public void addRip(String info, String video) {
+        rips.addRip(info, video);
+        bot.sendMessage(channel, "RIP added");
     }
 
     public void lootfilter() {

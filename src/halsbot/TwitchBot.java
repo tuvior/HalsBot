@@ -213,7 +213,12 @@ public class TwitchBot extends PircBot {
             poe.getCurses();
         } else if (isCommand(message, "!halschallenge")) {
             poe.halsChallenge();
-        } else if (isCommand(message, "!commands")) {
+        } else if (isCommand(message, "!rip")) {
+            poe.getRips();
+        } else if (isCommandWithParams(message, "!addrip")) {
+            String params = message.substring(8);
+            poe.addRip(params.substring(0, params.lastIndexOf(" ")), params.substring(params.lastIndexOf(" ") + 1));
+        }else if (isCommand(message, "!commands")) {
             if (getCurrentGame().equals("Realm of the Mad God")) {
                 String commands = "!server, !realmeye, !drops, !uptime, !coffee, !music, !about";
                 sendMessage(channel, commands);
