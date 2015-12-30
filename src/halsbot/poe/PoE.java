@@ -4,12 +4,14 @@ import halsbot.TwitchBot;
 import halsbot.droplist.Drop;
 import halsbot.droplist.POEDropList;
 import halsbot.poe.equip.Equipment;
+import halsbot.poe.ladder.Character;
 import halsbot.poe.ladder.Ladder;
 import halsbot.poe.ladder.RankStatus;
 import halsbot.poe.race.NoRaceException;
 import halsbot.poe.race.Race;
 import halsbot.poe.race.RaceModifier;
 import halsbot.webutil.WebUtil;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,14 +19,12 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static halsbot.webutil.WebUtil.readJsonFromUrl;
+import static halsbot.webutil.WebUtil.readJsonFromUrlArray;
 
 public class PoE {
 
@@ -184,6 +184,34 @@ public class PoE {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void halsChallenge() {
+        try {
+            JSONArray characters = readJsonFromUrlArray("https://www.pathofexile.com/character-window/get-characters?accountName=" + account);
+            HashMap<Character.Class, Integer> classes = new HashMap<>();
+            for (Character.Class class_ : Character.Class.values()) {
+                int maxLevel = 0;
+                for (int i = 0; i < characters.length(); i++) {
+                    JSONObject character = characters.getJSONObject(i);
+                    if (character.getString("league").equals("Hardcore Talisman") && character.getString("class").equals(class_.toString()) && character.getInt("level") > maxLevel) {
+                        maxLevel = character.getInt("level");
+                    }
+                }
+                classes.put(class_, maxLevel);
+            }
+
+            StringBuilder result = new StringBuilder();
+
+            for (Map.Entry<Character.Class, Integer> entry : classes.entrySet()) {
+                result.append(" | ").append(entry.getKey().toString()).append(" ").append(entry.getValue()).append("/90 ").append(entry.getValue() >= 90 ? "✓" : "✗");
+            }
+
+            bot.sendMessage(channel, result.toString().substring(3));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void rank() {
