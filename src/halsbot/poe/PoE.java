@@ -333,11 +333,11 @@ public class PoE {
             } else {
                 JSONObject ladder = readJsonFromUrl("http://api.pathofexile.com/leagues/" + URLEncoder.encode(league, "UTF-8"));
                 String url = ladder.getString("url");
-                SimpleDateFormat format = new SimpleDateFormat(
-                        "yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.GERMAN);
-                format.setTimeZone(TimeZone.getTimeZone("GMT"));
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
                 Date date = format.parse(ladder.getString("endAt"));
-                bot.sendMessage(channel, "Ladder and forum thread for " + league + ": " + url + "   League ends: " + date);
+                SimpleDateFormat day = new SimpleDateFormat("dd/MM/yy");
+                SimpleDateFormat time = new SimpleDateFormat("HH:mm");
+                bot.sendMessage(channel, "Ladder and forum thread for " + league + ": " + url + "   League ends on the " + day.format(date) + " at " + time.format(date));
             }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
