@@ -6,6 +6,7 @@ poe_droplist.txt
 viewers.csv
 coffee.txt
 config.properties
+rips.txt
 
 # IntelliJ Stuff
 *.iml
