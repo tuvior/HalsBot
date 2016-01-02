@@ -1,32 +1,14 @@
-*.iml
-
+# HalsBot Files
 /logs/
 /scripts/
-droplist.txt
 realm_droplist.txt
 poe_droplist.txt
 viewers.csv
-/src/META-INF/
-.project
-.classpath
-.settings
+coffee.txt
 config.properties
 
-
+# IntelliJ Stuff
+*.iml
+/src/META-INF/
 .idea/
-
-*.ipr
-*.iws
-
 /out/
-/bin/
-/classes/
-
-.idea_modules/
-
-atlassian-ide-plugin.xml
-
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
