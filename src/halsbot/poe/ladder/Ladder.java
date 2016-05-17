@@ -56,6 +56,25 @@ public class Ladder {
         classes.put(Class.Shadow, 0);
         classes.put(Class.Templar, 0);
         classes.put(Class.Witch, 0);
+        classes.put(Class.Slayer, 0);
+        classes.put(Class.Gladiator, 0);
+        classes.put(Class.Champion, 0);
+        classes.put(Class.Assassin, 0);
+        classes.put(Class.Saboteur, 0);
+        classes.put(Class.Trickster, 0);
+        classes.put(Class.Juggernaut, 0);
+        classes.put(Class.Berserker, 0);
+        classes.put(Class.Chieftain, 0);
+        classes.put(Class.Necromancer, 0);
+        classes.put(Class.Elementalist, 0);
+        classes.put(Class.Occultist, 0);
+        classes.put(Class.Deadeye, 0);
+        classes.put(Class.Raider, 0);
+        classes.put(Class.Pathfinder, 0);
+        classes.put(Class.Inquisitor, 0);
+        classes.put(Class.Hierophant, 0);
+        classes.put(Class.Guardian, 0);
+        classes.put(Class.Ascendant, 0);
 
         Class charClass = null;
         String charName = "";

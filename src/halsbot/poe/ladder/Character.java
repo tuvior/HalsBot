@@ -55,6 +55,63 @@ public class Character {
             case ("Ranger"):
                 charClass = Class.Ranger;
                 break;
+            case ("Assassin"):
+                charClass = Class.Assassin;
+                break;
+            case ("Juggernaut"):
+                charClass = Class.Juggernaut;
+                break;
+            case ("Necromancer"):
+                charClass = Class.Necromancer;
+                break;
+            case ("Deadeye"):
+                charClass = Class.Deadeye;
+                break;
+            case ("Saboteur"):
+                charClass = Class.Saboteur;
+                break;
+            case ("Berserker"):
+                charClass = Class.Berserker;
+                break;
+            case ("Elementalist"):
+                charClass = Class.Elementalist;
+                break;
+            case ("Raider"):
+                charClass = Class.Raider;
+                break;
+            case ("Inquisitor"):
+                charClass = Class.Inquisitor;
+                break;
+            case ("Hierophant"):
+                charClass = Class.Hierophant;
+                break;
+            case ("Slayer"):
+                charClass = Class.Slayer;
+                break;
+            case ("Gladiator"):
+                charClass = Class.Gladiator;
+                break;
+            case ("Ascendant"):
+                charClass = Class.Ascendant;
+                break;
+            case ("Champion"):
+                charClass = Class.Champion;
+                break;
+            case ("Trickster"):
+                charClass = Class.Trickster;
+                break;
+            case ("Chieftain"):
+                charClass = Class.Chieftain;
+                break;
+            case ("Occultist"):
+                charClass = Class.Occultist;
+                break;
+            case ("Pathfinder"):
+                charClass = Class.Pathfinder;
+                break;
+            case ("Guardian"):
+                charClass = Class.Guardian;
+                break;
         }
         return new Character(obj.getString("name"), obj.getInt("level"), charClass, experience, time);
     }
@@ -82,7 +139,26 @@ public class Character {
         Scion,
         Shadow,
         Templar,
-        Witch
+        Witch,
+        Assassin,
+        Juggernaut,
+        Necromancer,
+        Deadeye,
+        Saboteur,
+        Berserker,
+        Elementalist,
+        Raider,
+        Inquisitor,
+        Hierophant,
+        Slayer,
+        Gladiator,
+        Ascendant,
+        Champion,
+        Trickster,
+        Chieftain,
+        Occultist,
+        Pathfinder,
+        Guardian
     }
 
 }

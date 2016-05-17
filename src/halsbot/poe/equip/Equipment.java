@@ -41,6 +41,10 @@ public class Equipment {
             }
         }
 
+        if (result.isEmpty()) {
+            return "Not playing support at the moment.";
+        }
+
         return result.substring(3);
     }
 

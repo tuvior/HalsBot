@@ -226,7 +226,7 @@ public class PoE {
                 int maxLevel = 0;
                 for (int i = 0; i < characters.length(); i++) {
                     JSONObject character = characters.getJSONObject(i);
-                    if (character.getString("league").equals("Hardcore Talisman") && character.getString("class").equals(class_.toString()) && character.getInt("level") > maxLevel) {
+                    if (character.getString("league").equals(league) && character.getString("class").equals(class_.toString()) && character.getInt("level") > maxLevel) {
                         maxLevel = character.getInt("level");
                     }
                 }
@@ -334,10 +334,13 @@ public class PoE {
                 JSONObject ladder = readJsonFromUrl("http://api.pathofexile.com/leagues/" + URLEncoder.encode(league, "UTF-8"));
                 String url = ladder.getString("url");
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-                Date date = format.parse(ladder.getString("endAt"));
+                Date date = null;
+                if (!ladder.isNull("endAt")) {
+                    date = format.parse(ladder.getString("endAt"));
+                }
                 SimpleDateFormat day = new SimpleDateFormat("dd/MM/yy");
                 SimpleDateFormat time = new SimpleDateFormat("HH:mm");
-                bot.sendMessage(channel, "Ladder and forum thread for " + league + ": " + url + "   League ends on the " + day.format(date) + " at " + time.format(date));
+                bot.sendMessage(channel, "Ladder and forum thread for " + league + ": " + url + (date != null ? " League ends on the " + day.format(date) + " at " + time.format(date) : ""));
             }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
