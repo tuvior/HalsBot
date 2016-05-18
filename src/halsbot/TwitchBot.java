@@ -74,7 +74,6 @@ public class TwitchBot extends PircBot {
     @Override
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
         echo("<" + sender + "> " + message);
-        userList.addMessage(sender);
         if (isCommand(message, "!reload")) {
             if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
@@ -278,7 +277,11 @@ public class TwitchBot extends PircBot {
         //title
         else if (title && PageTitle.checkForUrl(message) && !sender.toLowerCase().equals("nightbot")) {
             sendMessage(channel, PageTitle.getPageTitle(message));
+            userList.addMessage(sender);
+        } else {
+            userList.addMessage(sender);
         }
+
     }
 
     @Override
