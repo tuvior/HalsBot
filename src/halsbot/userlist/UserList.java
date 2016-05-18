@@ -1,85 +1,44 @@
 package halsbot.userlist;
 
+import halsbot.userlist.db.Database;
+
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserList {
+    private Database db;
 
-    private Map<String, User> users;
-    private String path;
-
-    public UserList(String path) {
-        this.path = path;
-        users = new HashMap<>();
-        loadFromFile();
+    public UserList() {
+        db = new Database();
     }
 
-    private void loadFromFile() {
-        File file = new File(path);
-        if (file.exists()) {
-            try {
-                FileReader reader = new FileReader(path);
-                BufferedReader bufferedReader = new BufferedReader(reader);
-
-                String line;
-                bufferedReader.readLine();
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    String[] user_data = line.split(",");
-                    User user = new User(user_data[0], Integer.parseInt(user_data[1]));
-                    users.put(user_data[0], user);
-                }
-                reader.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    private void writeToFile() {
-        try {
-            FileWriter writer = new FileWriter(path);
-            writer.write("Name,Messages");
-            writer.write("\n");
-            for (User user : users.values()) {
-                writer.write(user.toString());
-                writer.write("\n");
-            }
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public int getMessages(String name) {
-        if (users.containsKey(name)) {
-            return users.get(name).getMessages();
-        } else {
-            return 0;
-        }
+        return db.getMessages(name);
     }
 
-    public void updateUser(String name) {
-        if (users.containsKey(name)) {
-            User temp = users.get(name);
-            temp.addMessage();
-            users.put(name, temp);
-        } else {
-            User user = new User(name, 1);
-            users.put(name, user);
-        }
-
-        writeToFile();
+    public void addMessage(String name) {
+        db.addMessage(name, System.currentTimeMillis(), false);
     }
 
     public void addUser(String name) {
-        if (!users.containsKey(name)) {
-            User user = new User(name, 0);
-            users.put(name, user);
-            writeToFile();
+        db.addMessage(name, System.currentTimeMillis(), true);
+    }
+
+    public String getTopViewers() {
+        List<User> top = db.getTopViewers();
+        if (top != null && top.size() > 0) {
+            StringBuilder res = new StringBuilder();
+            for (User user : top) {
+                res.append(user.getName()).append(" ").append(user.getMessages()).append(", ");
+            }
+
+            String result = res.toString();
+            return result.substring(0, result.length() - 2);
         }
+
+        return "";
     }
 }

@@ -49,7 +49,7 @@ public class TwitchBot extends PircBot {
         oauth = config.oauth;
         twitchChannel = config.twitch;
         editorOAuth = config.editorOauth;
-        userList = new UserList("viewers.csv");
+        userList = new UserList();
     }
 
     private static String getTimeStamp() {
@@ -74,7 +74,7 @@ public class TwitchBot extends PircBot {
     @Override
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
         echo("<" + sender + "> " + message);
-        userList.updateUser(sender);
+        userList.addMessage(sender);
         if (isCommand(message, "!reload")) {
             if (!isMod(sender)) {
                 sendMessage(channel, "User not authorized.");
@@ -168,6 +168,8 @@ public class TwitchBot extends PircBot {
             } else {
                 sendMessage(channel, "Error");
             }
+        } else if (isCommand(message, "!top")) {
+            sendMessage(channel, userList.getTopViewers());
         }
 
         // PoE Commands
@@ -281,7 +283,7 @@ public class TwitchBot extends PircBot {
 
     @Override
     public void onJoin(String channel, String sender, String login, String hostname) {
-        if (!sender.equals(getName())) {
+        if (!sender.equalsIgnoreCase(getName())) {
             userList.addUser(sender);
         }
         echo("Join in " + channel + " " + sender);

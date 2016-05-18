@@ -81,6 +81,7 @@ public class Ladder {
         int rank = -1;
         int rankInClass = -1;
         int level = -1;
+        boolean dead = false;
 
         for (LadderEntry entry : entries) {
 

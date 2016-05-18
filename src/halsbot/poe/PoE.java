@@ -192,7 +192,7 @@ public class PoE {
                     title = title.replaceAll("[H|h]als [C|c]hallenge", "Hals Challenge 0/7");
                 }
                 int challenge = halsChallengeCount();
-                title = title.replace("[H|h]als [C|c]hallenge [0-9]\\/7", "Hals Challenge " + challenge + "/7");
+                title = title.replace("[H|h]als [C|c]hallenge [0-9]+\\/[0-9]+", "Hals Challenge " + challenge + "/" + Character.Class.values().length);
                 update = true;
             }
             if (!rank.notFound) {
@@ -200,8 +200,14 @@ public class PoE {
                     title = title.replaceAll("Rank [0-9]+", "Rank " + rank.rank);
                     update = true;
                 }
+
+                if (title.matches("#[0-9]+") && rank.classRank > 0) {
+                    title = title.replaceAll("#[0-9]+", "#" + rank.classRank);
+                    update = true;
+                }
+
                 if (title.contains("lvl")) {
-                    title = title.replaceAll("lvl[0-9]+", "lvl" + rank.level);
+                    title = title.replaceAll("lvl( )*?[0-9]+", "lvl " + rank.level);
                     update = true;
                 }
             } else {
@@ -245,7 +251,7 @@ public class PoE {
         }
     }
 
-    public int halsChallengeCount() {
+    private int halsChallengeCount() {
         try {
             int amount = 0;
             JSONArray characters = readJsonFromUrlArray("https://www.pathofexile.com/character-window/get-characters?accountName=" + account);
@@ -253,7 +259,7 @@ public class PoE {
                 int maxLevel = 0;
                 for (int i = 0; i < characters.length(); i++) {
                     JSONObject character = characters.getJSONObject(i);
-                    if (character.getString("league").equals("Hardcore Talisman") && character.getString("class").equals(class_.toString()) && character.getInt("level") > maxLevel) {
+                    if (character.getString("league").equals(league) && character.getString("class").equals(class_.toString()) && character.getInt("level") > maxLevel) {
                         maxLevel = character.getInt("level");
                     }
                 }
@@ -291,7 +297,7 @@ public class PoE {
         }
     }
 
-    public void getRank() throws IOException {
+    private void getRank() throws IOException {
         Ladder ladder = Ladder.getLadderForLeague(league);
         RankStatus rank = ladder.getRankForQuery(characterName, true);
         if (rank.notFound) {
