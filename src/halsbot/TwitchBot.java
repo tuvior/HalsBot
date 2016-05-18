@@ -16,7 +16,13 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static halsbot.webutil.WebUtil.readJsonFromUrl;
 
@@ -34,22 +40,24 @@ public class TwitchBot extends PircBot {
     private CoffeeCounter coffeeCounter;
     private Set<String> mods;
     private String editorOAuth;
+    private ChatLogger logger;
 
     public TwitchBot() throws IOException {
-        Config config = new Config();
+        Config configuration = Config.loadConfig();
 
         setMessageDelay(1300);
-        setName(config.name);
+        setName(configuration.name);
         setEncoding("utf-8");
         scripts = new ScriptManager(this);
-        poe = new PoE(this, "#" + config.twitch, config.poeAccount);
-        realm = new Realm(this, "#" + config.twitch, config.realmeye);
-        coffeeCounter = new CoffeeCounter();
-        mods = config.mods;
-        oauth = config.oauth;
-        twitchChannel = config.twitch;
-        editorOAuth = config.editorOauth;
-        userList = new UserList();
+        poe = new PoE(this, "#" + configuration.twitch, configuration.poeAccount);
+        realm = new Realm(this, "#" + configuration.twitch, configuration.realmeye);
+        coffeeCounter = CoffeeCounter.loadCoffeeCounter();
+        mods = configuration.mods;
+        oauth = configuration.oauth;
+        twitchChannel = configuration.twitch;
+        editorOAuth = configuration.editorOauth;
+        userList = UserList.loadUserList();
+        logger = new ChatLogger("#" + twitchChannel);
     }
 
     private static String getTimeStamp() {
@@ -63,7 +71,7 @@ public class TwitchBot extends PircBot {
             connect("irc.twitch.tv", 6667, oauth);
             joinChannel("#" + twitchChannel);
             sendRawLine("CAP REQ :twitch.tv/membership");
-            titleUpdateThread();
+            dynamicTitleUpdateTask();
         } catch (NickAlreadyInUseException n) {
             System.err.println("This should never happen");
         } catch (Exception e) {
@@ -91,7 +99,7 @@ public class TwitchBot extends PircBot {
         }
 
         scripts.onMessage(channel, sender, login, hostname, message);
-        log(channel, sender, message);
+        logger.log(sender, message);
 
         // Basic commands
         if (isCommand(message, "!quit")) {
@@ -219,7 +227,7 @@ public class TwitchBot extends PircBot {
         } else if (isCommandWithParams(message, "!addrip")) {
             String params = message.substring(8);
             poe.addRip(params.substring(0, params.lastIndexOf(" ")), params.substring(params.lastIndexOf(" ") + 1));
-        }else if (isCommand(message, "!commands")) {
+        } else if (isCommand(message, "!commands")) {
             if (getCurrentGame().equals("Realm of the Mad God")) {
                 String commands = "!server, !realmeye, !drops, !uptime, !coffee, !music, !about";
                 sendMessage(channel, commands);
@@ -288,8 +296,8 @@ public class TwitchBot extends PircBot {
     public void onJoin(String channel, String sender, String login, String hostname) {
         if (!sender.equalsIgnoreCase(getName())) {
             userList.addUser(sender);
+            echo(sender + " joined");
         }
-        echo("Join in " + channel + " " + sender);
     }
 
     @Override
@@ -297,21 +305,14 @@ public class TwitchBot extends PircBot {
         echo(line);
     }
 
-    public void titleUpdateThread() {
-        new Thread() {
-            public void run() {
-                while(true) {
-                    if (getStreamStart() != null && getCurrentGame().equals("Path of Exile")) {
-                        poe.updateTitleTags();
-                    }
-                    try {
-                        Thread.sleep(300000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+    private void dynamicTitleUpdateTask() {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        scheduler.scheduleAtFixedRate(() -> {
+            if (getStreamStart() != null && getCurrentGame().equals("Path of Exile")) {
+                poe.updateTitleTags();
             }
-        }.start();
+        }, 0, 5, TimeUnit.MINUTES);
     }
 
     public void banUser(String user, String channel) {
@@ -346,7 +347,7 @@ public class TwitchBot extends PircBot {
         sendMessage(channel, ".subscribersoff");
     }
 
-    public Date getStreamStart() {
+    private Date getStreamStart() {
         try {
             JSONObject t_stream = readJsonFromUrl("https://api.twitch.tv/kraken/streams/" + twitchChannel);
             if (!t_stream.isNull("stream")) {
@@ -361,24 +362,6 @@ public class TwitchBot extends PircBot {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public void log(String channel, String nick, String message) {
-        try {
-            File folder = new File("logs/");
-            if (!folder.isDirectory()) {
-                folder.mkdir();
-            }
-            File tempFile = new File("logs/" + channel + ".txt");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile, true));
-            String timeStamp = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(Calendar.getInstance().getTime());
-            String log = timeStamp + " <" + nick + "> " + message;
-            writer.write(log + System.getProperty("line.separator"));
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     private boolean isMod(String user) {
@@ -499,6 +482,6 @@ public class TwitchBot extends PircBot {
     }
 
     public void echo(String message) {
-        System.out.println("[" + getName() + "]: " + getTimeStamp() + ": " + message);
+        System.out.println("[" + getTimeStamp() + "][" + getName() + "] " + message);
     }
 }

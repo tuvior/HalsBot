@@ -2,18 +2,18 @@ package halsbot.userlist;
 
 import halsbot.userlist.db.Database;
 
-import java.io.*;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class UserList {
     private Database db;
 
-    public UserList() {
+    private UserList() {
         db = new Database();
     }
 
+    public static UserList loadUserList() {
+        return new UserList();
+    }
 
     public int getMessages(String name) {
         return db.getMessages(name);

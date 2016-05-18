@@ -5,9 +5,13 @@ import java.io.*;
 public class CoffeeCounter {
     private int coffee;
 
-    public CoffeeCounter() {
+    private CoffeeCounter() {
         coffee = 0;
         loadCoffee();
+    }
+
+    public static CoffeeCounter loadCoffeeCounter() {
+        return new CoffeeCounter();
     }
 
     public int getCoffee() {

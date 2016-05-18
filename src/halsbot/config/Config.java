@@ -18,15 +18,19 @@ public class Config {
     public String editorOauth;
     public Set<String> mods;
 
-    public Config() {
+    private Config() {
         try {
-            loadConfig();
+            loadConfigFromFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void loadConfig() throws IOException {
+    public static Config loadConfig() {
+        return new Config();
+    }
+
+    private void loadConfigFromFile() throws IOException {
         File conf = new File("config.properties");
         if (!conf.exists()) {
             throw new IOException("Missing config file");
