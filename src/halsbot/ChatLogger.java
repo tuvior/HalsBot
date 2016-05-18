@@ -8,28 +8,31 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class ChatLogger {
-    private BufferedWriter logger;
+    private final BufferedWriter logger;
 
-    public ChatLogger(String fileName) {
+    public ChatLogger(String fileName) throws IOException {
         File folder = new File("logs/");
         if (!folder.isDirectory()) {
             folder.mkdir();
         }
-        File tempFile = new File("logs/" + fileName + ".txt");
-        try {
-            logger = new BufferedWriter(new FileWriter(tempFile, true));
-        } catch (IOException e) {
-            System.err.println("Error while initializing log file");
-        }
+        final File tempFile = new File("logs/" + fileName + ".txt");
+        logger = new BufferedWriter(new FileWriter(tempFile, true));
     }
 
     public void log(String name, String message) {
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(Calendar.getInstance().getTime());
         String log = timeStamp + " <" + name + "> " + message;
-        try {
-            logger.write(log + System.getProperty("line.separator"));
-        } catch (IOException e) {
-            e.printStackTrace();
+        synchronized (logger) {
+            try {
+                logger.write(log + System.getProperty("line.separator"));
+                logger.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    public void close() throws IOException {
+        logger.close();
     }
 }
